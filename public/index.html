@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Langkah Awal Mengenal TB</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* --- RESET AGGRESSIVE UNTUK MENGHILANGKAN SPACE BAWAAN --- */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-width: 320px;
+        overflow-x: hidden;
+      }
+      /* -------------------------------------------------------- */
+
+      :root {
+        --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --accent-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --text-dark: #2c3e50;
+        --text-light: #7f8c8d;
+        --bg-light: #f4f7f6;
+        --white: #ffffff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.12);
+        --radius: 12px;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--bg-light);
+        color: var(--text-dark);
+        line-height: 1.6;
+        padding-top: 80px;
+      }
+
+      /* --- NAVBAR (FIX: BOX FLUSH, CONTENT CENTERED) --- */
+      .navbar {
+        background-color: var(--white);
+        box-shadow: var(--shadow-sm);
+        height: 70px;
+        padding: 0;
+        position: fixed;
+        top: 0;
+        width: 100%; /* Kotak Mentok Ke Tepi */
+        z-index: 1000;
+        display: flex;
+        justify-content: center; /* Pusat horizontal */
+        align-items: center;
+      }
+
+      .nav-container {
+        width: 100%;
+        max-width: 1000px; /* FIX: Batasi lebar konten untuk centering */
+        margin: 0 auto;
+        padding: 0 20px; /* FIX: Padding internal untuk space konten */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-brand {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .header-controls {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .nav-link {
+        text-decoration: none;
+        color: var(--text-dark);
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: color 0.3s;
+      }
+
+      .nav-link:hover {
+        color: var(--primary-color);
+      }
+
+      .auth-button {
+        padding: 8px 20px;
+        border: 2px solid var(--primary-color);
+        background-color: transparent;
+        color: var(--primary-color);
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        font-family: inherit;
+        transition: all 0.3s;
+      }
+
+      .auth-button:hover {
+        background-color: var(--primary-color);
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      }
+
+      /* --- HERO SECTION --- */
+      .hero-section {
+        max-width: 800px;
+        text-align: center;
+        margin: 40px auto 30px;
+        padding: 0 20px;
+      }
+
+      .hero-section h1 {
+        font-size: 2.5rem;
+        color: var(--text-dark);
+        margin-bottom: 15px;
+        line-height: 1.2;
+      }
+
+      .hero-section p {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+      }
+
+      .hero-section a {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        transition: border-bottom 0.3s;
+      }
+
+      .hero-section a:hover {
+        border-bottom: 2px solid var(--primary-color);
+      }
+
+      /* --- FORM CONTAINER (CARD) --- */
+      #skriningForm {
+        max-width: 800px;
+        margin: 0 auto 60px;
+        background: var(--white);
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-md);
+      }
+
+      #skriningForm h2 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 15px;
+      }
+
+      fieldset {
+        border: 1px solid #eee;
+        border-radius: var(--radius);
+        padding: 25px;
+        margin-bottom: 30px;
+        background-color: #fcfcfc;
+      }
+
+      legend {
+        font-weight: 600;
+        padding: 5px 15px;
+        background-color: var(--primary-color);
+        color: var(--white);
+        border-radius: 20px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Grid Layout untuk Biodata */
+      .bio-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 15px;
+      }
+
+      .bio-full-width {
+        grid-column: 1 / -1;
+      }
+
+      /* TATA LETAK PERTANYAAN SEJAJAR (Flexbox) */
+      .question-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px dashed #eee;
+      }
+
+      .question-item:last-child {
+        border-bottom: none;
+      }
+
+      .question-item label {
+        flex: 1;
+        margin-right: 20px;
+        font-weight: 500;
+        color: #444;
+        font-size: 1rem;
+        line-height: 1.4;
+      }
+
+      /* Custom Select Styles */
+      .custom-select-wrapper {
+        width: 140px;
+        flex-shrink: 0;
+        position: relative;
+        user-select: none;
+      }
+      .custom-select-trigger {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #333;
+        background: #ffffff;
+        border: 1px solid #dcdcdc;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+      .custom-select-trigger:after {
+        content: "";
+        width: 6px;
+        height: 6px;
+        border-bottom: 2px solid #3498db;
+        border-right: 2px solid #3498db;
+        transform: rotate(45deg);
+        transition: transform 0.3s ease;
+        margin-top: -3px;
+      }
+      .custom-select-wrapper.open .custom-select-trigger:after {
+        transform: rotate(-135deg);
+        margin-top: 3px;
+      }
+      .custom-options {
+        position: absolute;
+        display: block;
+        top: 120%;
+        left: 0;
+        right: 0;
+        border: 1px solid #eef2f7;
+        border-radius: 8px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        background: #fff;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 100;
+        overflow: hidden;
+      }
+      .custom-select-wrapper.open .custom-options {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+      .custom-option {
+        position: relative;
+        display: block;
+        padding: 10px 15px;
+        font-size: 0.95rem;
+        color: #555;
+        cursor: pointer;
+        transition: all 0.2s;
+        border-bottom: 1px solid #f9f9f9;
+      }
+      .custom-option:hover {
+        background-color: #f0f9ff;
+        color: var(--primary-color);
+        padding-left: 20px;
+      }
+      .custom-option.selected {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+
+      /* Input Styles */
+      input[type="text"],
+      input[type="number"],
+      input[type="tel"],
+      input[type="password"],
+      select {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #dcdcdc;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 1rem;
+        transition: all 0.3s;
+        box-sizing: border-box;
+        background-color: var(--white);
+      }
+
+      input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+      }
+
+      input:disabled,
+      input[readonly] {
+        background-color: #f2f2f2;
+        color: #666;
+        cursor: not-allowed;
+      }
+
+      /* Submit Button */
+      button[type="submit"] {
+        width: 100%;
+        padding: 16px;
+        background-color: var(--accent-color);
+        color: var(--white);
+        border: none;
+        border-radius: var(--radius);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+        box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        margin-top: 20px;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #27ae60;
+        transform: translateY(-2px);
+      }
+
+      /* Audio Controls */
+      #audioControls {
+        background: #fff;
+        padding: 20px;
+        border: 2px dashed #bdc3c7;
+        border-radius: var(--radius);
+        text-align: center;
+        margin-top: 15px;
+      }
+      #startRecord,
+      #stopRecord {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 0 5px;
+        transition: opacity 0.3s;
+      }
+      #startRecord {
+        background-color: var(--primary-color);
+        color: white;
+      }
+      #stopRecord {
+        background-color: var(--danger-color);
+        color: white;
+      }
+      #startRecord:disabled,
+      #stopRecord:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* --- MODAL STYLING (Login/Register/Alert/Info) --- */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        animation: fadeIn 0.3s ease;
+      }
+
+      /* GAYA UNTUK MODAL KONTEN (Form Login/Register) */
+      .modal-content {
+        background-color: var(--white);
+        padding: 40px;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 420px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+
+        /* POSISI TENGAH LAYAR */
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+
+        max-height: 90vh;
+        overflow-y: auto;
+        animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .modal-content h2 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-top: 0;
+        margin-bottom: 25px;
+        border-bottom: none;
+      }
+
+      .close-button,
+      .close-info-button {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s;
+        z-index: 10;
+      }
+      .close-button:hover,
+      .close-info-button:hover {
+        color: var(--danger-color);
+      }
+
+      .modal-content button[type="submit"] {
+        margin-top: 15px;
+        background-color: var(--primary-color);
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+      }
+      .modal-content button[type="submit"]:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .modal-switch {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 0.9rem;
+        color: var(--text-light);
+      }
+      .modal-switch a {
+        color: var(--primary-color);
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      /* GAYA UNTUK MODAL INFO */
+      .info-content {
+        max-width: 600px !important;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding-right: 10px;
+      }
+      .info-content::-webkit-scrollbar {
+        width: 8px;
+      }
+      .info-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+      }
+      .info-content::-webkit-scrollbar-thumb {
+        background: #bdc3c7;
+        border-radius: 4px;
+      }
+      .info-content::-webkit-scrollbar-thumb:hover {
+        background: #95a5a6;
+      }
+
+      /* CUSTOM ALERT MODAL */
+      #messageAlertModal .confirm-modal-content {
+        background-color: var(--white);
+        padding: 30px;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 350px;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+        animation: zoomIn 0.3s ease;
+      }
+      #messageAlertModal h3 {
+        color: var(--primary-color);
+        font-size: 1.4rem;
+        margin-top: 0;
+      }
+      #messageAlertModal p {
+        font-size: 1rem;
+        color: #555;
+        margin: 15px 0 25px;
+      }
+      #messageAlertModal button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      /* FLOATING HELP BUTTON */
+      .help-fab {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.5);
+        cursor: pointer;
+        z-index: 999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s;
+        animation: bounceIn 1s ease;
+      }
+      .help-fab:hover {
+        transform: scale(1.1) rotate(15deg);
+      }
+
+      /* ANIMATIONS */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes zoomIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -60%) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.1);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      /* Responsive */
+      @media (max-width: 600px) {
+        .nav-container {
+          padding: 0 10px;
+        }
+        .hero-section {
+          max-width: 100%;
+          padding: 0 15px;
+        }
+        #skriningForm {
+          padding: 25px 15px;
+          width: 95%;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .modal-content {
+          width: 90%;
+          margin: 20% auto;
+        }
+        .bio-grid {
+          grid-template-columns: 1fr;
+        }
+        .question-item {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        .question-item label {
+          margin-bottom: 10px;
+        }
+        .custom-select-wrapper {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav-container">
+        <a href="#" class="nav-brand">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
+            ></path>
+          </svg>
+          TB Care
+        </a>
+        <div class="header-controls">
+          <a
+            id="historyLink"
+            href="history.html"
+            class="nav-link"
+            style="display: none"
+            >Riwayat</a
+          >
+          <a
+            id="profileLink"
+            href="profile.html"
+            class="nav-link"
+            style="display: none"
+            >Profil</a
+          >
+          <div id="authContainer"></div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="hero-section">
+      <h1>
+        Langkah Awal Mengenal TB <br />
+        <span style="color: var(--primary-color)">Sistem Skrining Mandiri</span>
+      </h1>
+      <p class="subtitle">
+        Alat deteksi dini risiko Tuberkulosis untuk kesehatan Anda dan
+        keluarga.<br />
+        Silakan isi form dengan jujur.
+        <br /><br />
+        <a href="edukasi.html">Baca Lebih Lanjut Mengenai TB di Sini &rarr;</a>
+      </p>
+    </div>
+
+    <form id="skriningForm">
+      <h2>Formulir Skrining Mandiri</h2>
+
+      <fieldset>
+        <legend>1. Identitas Responden</legend>
+        <div class="bio-grid">
+          <div class="form-group bio-full-width">
+            <label for="nama">Nama Lengkap</label>
+            <input
+              type="text"
+              id="nama"
+              name="nama"
+              required
+              placeholder="Contoh: Budi Santoso"
+            />
+          </div>
+          <div class="form-group">
+            <label for="usia">Usia (Tahun)</label>
+            <input
+              type="number"
+              id="usia"
+              name="usia"
+              required
+              placeholder="35"
+              min="1"
+            />
+          </div>
+          <div class="form-group">
+            <label for="no_telp">No. Telepon (WA)</label>
+            <input
+              type="tel"
+              id="no_telp"
+              name="no_telp"
+              required
+              placeholder="0812XXXXXXXX"
+            />
+          </div>
+        </div>
+        <div class="question-item">
+          <label>Apakah Anda pernah menderita TB?</label>
+          <select name="riwayatTB">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Keluhan yang Dirasakan</legend>
+        <div class="question-item">
+          <label>Batuk lebih dari 2 minggu?</label>
+          <select name="batuk2minggu">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Berkeringat di malam hari tanpa aktivitas?</label>
+          <select name="keringatMalam">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Nafsu makan berkurang?</label>
+          <select name="nafsuMakanKurang">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Mengalami sesak pada pernafasan?</label>
+          <select name="sesak">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Dahak dengan bercak darah?</label>
+          <select name="dahakDarah">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Malaise (lelah, tidak nyaman, kurang enak badan)?</label>
+          <select name="malaise">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Penurunan berat badan?</label>
+          <select name="penurunanBB">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Demam dan menggigil?</label>
+          <select name="demamMenggigil">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Risiko Paparan</legend>
+        <div class="question-item">
+          <label
+            >Pernah tinggal satu rumah dengan seseorang yang menderita
+            TB?</label
+          >
+          <select name="paparanRumahTB">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Pernah berada satu ruangan tertutup lama dengan pasien TB?</label
+          >
+          <select name="paparanRuanganTertutup">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Pernah merawat pasien TB tanpa APD (masker)?</label>
+          <select name="paparanRawatTanpaAPD">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Anggota keluarga atau tetangga dekat yang sedang menjalani
+            pengobatan TB?</label
+          >
+          <select name="paparanKeluargaTetangga">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Tinggal di lingkungan dengan kasus TB tinggi (misalnya padat
+            penduduk)?</label
+          >
+          <select name="paparanLingkunganPadat">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>4. Sikap dan Perilaku</legend>
+        <div class="question-item">
+          <label>Jarang mencuci tangan setelah batuk/bersin?</label>
+          <select name="sikapJarangCuciTangan">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Tidak memakai masker saat batuk?</label>
+          <select name="sikapTidakMaskerBatuk">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Sering berada di ruangan padat & tertutup tanpa masker?</label>
+          <select name="sikapRuanganPadat">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Menunda memeriksakan diri saat batuk lebih dari 2 minggu?</label
+          >
+          <select name="sikapMenundaPeriksa">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>5. Faktor Lingkungan</legend>
+        <div class="question-item">
+          <label>Rumah Anda memiliki ventilasi yang kurang baik?</label>
+          <select name="lingkunganVentilasiKurang">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Rumah Anda terasa padat atau banyak orang tinggal dalam satu
+            ruangan?</label
+          >
+          <select name="lingkunganRumahPadat">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Rumah atau tempat kerja Anda kurang mendapatkan sinar
+            matahari?</label
+          >
+          <select name="lingkunganKurangMatahari">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label
+            >Sering terpapar asap rokok, asap dapur padat, atau polusi dalam
+            ruangan?</label
+          >
+          <select name="lingkunganTerpaparAsap">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+        <div class="question-item">
+          <label>Lingkungan Anda memiliki standar sanitasi yang rendah?</label>
+          <select name="lingkunganSanitasiRendah">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>6. Scan Suara Batuk (Opsional)</legend>
+        <div class="question-item">
+          <label
+            >Apakah Anda bersedia mengunggah rekaman batuk untuk
+            dianalisis?</label
+          >
+          <select name="bersediaScanBatuk" id="bersediaScanBatuk">
+            <option value="Tidak">Tidak</option>
+            <option value="Ya">Ya</option>
+          </select>
+        </div>
+
+        <div id="audioControls" style="display: none">
+          <p style="font-size: 0.9rem; color: #777; margin-bottom: 15px">
+            Silakan rekam suara batuk Anda (Maks. 5 detik) atau unggah file.
+          </p>
+          <div style="margin-bottom: 20px">
+            <button type="button" id="startRecord">🎤 Mulai Rekam</button>
+            <button type="button" id="stopRecord" disabled>⏹ Stop</button>
+            <span
+              id="recordingStatus"
+              style="
+                margin-left: 10px;
+                font-size: 0.9rem;
+                color: var(--danger-color);
+              "
+            ></span>
+          </div>
+          <audio
+            id="audioPreview"
+            controls
+            style="width: 100%; margin-bottom: 20px; display: none"
+          ></audio>
+          <div class="question-item">
+            <label for="uploadBatuk"
+              >Atau unggah file audio (.wav / .mp3):</label
+            >
+            <div style="flex: 1; display: flex; justify-content: flex-end">
+              <input
+                type="file"
+                id="uploadBatuk"
+                name="uploadBatuk"
+                accept=".wav,.mp3"
+                style="width: auto"
+              />
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      <button type="submit">Lihat Hasil Skrining PITA LILA</button>
+    </form>
+
+    <div id="hasilSkrining"></div>
+
+    <div id="authModal" class="modal">
+      <div class="modal-content">
+        <span class="close-button" onclick="closeAuthModal()">&times;</span>
+        <h2 id="modalTitle">Login Akun</h2>
+
+        <form id="loginForm">
+          <div
+            class="question-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required />
+          </div>
+          <div
+            class="question-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required />
+          </div>
+          <button type="submit">Login</button>
+          <p class="modal-switch">
+            Belum punya akun?
+            <a href="#" onclick="showAuthModal('register')">Daftar di sini</a>
+          </p>
+        </form>
+
+        <form id="registerForm" style="display: none">
+          <div
+            class="question-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label for="reg_namaLengkap">Nama Lengkap</label>
+            <input
+              type="text"
+              id="reg_namaLengkap"
+              name="reg_namaLengkap"
+              required
+            />
+          </div>
+          <div
+            class="question-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label for="reg_no_telp">No. Telepon (WA)</label>
+            <input type="text" id="reg_no_telp" name="reg_no_telp" required />
+          </div>
+          <div
+            class="question-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label for="reg_username">Username</label>
+            <input type="text" id="reg_username" name="reg_username" required />
+          </div>
+          <div
+            class="question-item"
+            style="flex-direction: column; align-items: stretch"
+          >
+            <label for="reg_password">Password</label>
+            <input
+              type="password"
+              id="reg_password"
+              name="reg_password"
+              required
+            />
+          </div>
+          <button type="submit">Daftar</button>
+          <p class="modal-switch">
+            Sudah punya akun?
+            <a href="#" onclick="showAuthModal('login')">Login di sini</a>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <div id="messageAlertModal" class="modal">
+      <div class="confirm-modal-content">
+        <h3 id="alertTitle">Pesan</h3>
+        <p id="alertMessage">Isi pesan disini.</p>
+        <div class="confirm-buttons">
+          <button id="alertCloseButton">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <button id="helpButton" class="help-fab" title="Cara Kerja Aplikasi">
+      <span style="font-size: 1.5rem; font-weight: bold">?</span>
+    </button>
+
+    <div id="infoModal" class="modal">
+      <div class="modal-content info-content">
+        <span class="close-info-button">&times;</span>
+        <h2
+          style="
+            color: var(--primary-color);
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+          "
+        >
+          Tentang Sistem Skrining
+        </h2>
+
+        <div style="text-align: left; line-height: 1.6; color: #444">
+          <p>
+            Aplikasi ini menggunakan metode
+            <strong>Rule-Based</strong> (Berbasis Aturan) untuk menghitung
+            tingkat risiko Tuberkulosis Anda.
+          </p>
+
+          <h3 style="color: #2c3e50; margin-top: 20px">1. Sistem Poin</h3>
+          <p>
+            Setiap jawaban "Ya" memiliki bobot poin yang berbeda tergantung
+            tingkat keparahannya:
+          </p>
+          <ul style="list-style: none; padding: 0">
+            <li
+              style="
+                background: #f9f9f9;
+                padding: 8px;
+                margin-bottom: 5px;
+                border-radius: 6px;
+              "
+            >
+              🔴 <strong>Riwayat TB:</strong> 5 Poin (Risiko Tertinggi)
+            </li>
+            <li
+              style="
+                background: #f9f9f9;
+                padding: 8px;
+                margin-bottom: 5px;
+                border-radius: 6px;
+              "
+            >
+              🟠 <strong>Gejala Klinis:</strong> 3 Poin per gejala
+            </li>
+            <li
+              style="
+                background: #f9f9f9;
+                padding: 8px;
+                margin-bottom: 5px;
+                border-radius: 6px;
+              "
+            >
+              🟡 <strong>Risiko Paparan:</strong> 2 Poin per item
+            </li>
+            <li
+              style="
+                background: #f9f9f9;
+                padding: 8px;
+                margin-bottom: 5px;
+                border-radius: 6px;
+              "
+            >
+              🔵 <strong>Sikap & Lingkungan:</strong> 1 Poin per item
+            </li>
+          </ul>
+
+          <h3 style="color: #2c3e50; margin-top: 20px">
+            2. Penentuan Hasil (PITA LILA)
+          </h3>
+          <p>Total skor Anda akan dikategorikan menjadi:</p>
+          <div style="display: grid; gap: 10px">
+            <div
+              style="
+                border-left: 5px solid #2ecc71;
+                background: #eaffea;
+                padding: 10px;
+              "
+            >
+              <strong>HIJAU (0 - 16 Poin)</strong><br />
+              <small>Risiko Rendah. Jaga pola hidup sehat.</small>
+            </div>
+            <div
+              style="
+                border-left: 5px solid #f1c40f;
+                background: #fffbea;
+                padding: 10px;
+              "
+            >
+              <strong>KUNING (17 - 32 Poin)</strong><br />
+              <small>Risiko Sedang. Lakukan observasi mandiri.</small>
+            </div>
+            <div
+              style="
+                border-left: 5px solid #e74c3c;
+                background: #ffeaea;
+                padding: 10px;
+              "
+            >
+              <strong>MERAH (≥ 33 Poin)</strong><br />
+              <small>Risiko Tinggi. Segera periksa ke dokter.</small>
+            </div>
+          </div>
+
+          <p
+            style="
+              margin-top: 20px;
+              font-size: 0.9rem;
+              color: #777;
+              font-style: italic;
+            "
+          >
+            *Aplikasi ini hanyalah alat bantu skrining awal dan
+            <strong>bukan pengganti diagnosis dokter</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
