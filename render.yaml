@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: tb-care-web
+    env: docker
+    plan: free
+    branch: main
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: MONGODB_URI
+        sync: false
