@@ -10,7 +10,7 @@ const bcrypt = require('bcrypt');
 const { spawn } = require('child_process'); // Modul untuk memanggil Python
 const app = express(); 
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const saltRounds = 10; 
 
 // --- KONFIGURASI ADMIN ---
@@ -386,7 +386,6 @@ app.get('/admin', async (req, res) => {
 
 
 // --- RUN SERVER ---
-app.listen(PORT, () => {
-    console.log(`Server siap di http://localhost:${PORT}`);
-    console.log(`Akun Admin: ${DEFAULT_ADMIN_USERNAME} / default123`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server siap di port ${PORT}`);
 });
