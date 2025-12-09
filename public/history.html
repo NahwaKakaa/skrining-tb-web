@@ -2,7 +2,7 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Riwayat Skrining - TB Care</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
@@ -10,10 +10,19 @@
     />
     <link rel="stylesheet" href="style.css" />
     <style>
+      /* --- RESET AGGRESSIVE --- */
+      html, body { margin: 0; padding: 0; width: 100%; min-width: 320px; overflow-x: hidden; }
+
       :root {
         --primary-color: #3498db;
+        --primary-dark: #2980b9;
+        --accent-color: #2ecc71;
+        --danger-color: #e74c3c;
+        --text-dark: #2c3e50;
+        --text-light: #7f8c8d;
         --bg-light: #f4f7f6;
         --white: #ffffff;
+        --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
         --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.12);
         --radius: 12px;
       }
@@ -21,48 +30,69 @@
       body {
         font-family: "Poppins", sans-serif;
         background-color: var(--bg-light);
-        color: #2c3e50;
+        color: var(--text-dark);
         margin: 0;
         padding-top: 80px;
+        line-height: 1.6;
       }
 
+      /* --- NAVBAR (KONSISTEN DENGAN INDEX) --- */
       .navbar {
-        background: var(--white);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        background-color: var(--white);
+        box-shadow: var(--shadow-sm);
         height: 70px;
+        padding: 0;
         position: fixed;
         top: 0;
         width: 100%;
         z-index: 1000;
         display: flex;
+        align-items: center;
         justify-content: center;
       }
+
       .nav-container {
-        width: 90%;
+        width: 100%;
         max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 20px;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
+
       .nav-brand {
         font-size: 1.5rem;
         font-weight: 700;
         color: var(--primary-color);
         text-decoration: none;
         display: flex;
+        align-items: center;
         gap: 10px;
       }
+
       .nav-link {
         text-decoration: none;
-        color: #2c3e50;
-        font-weight: 500;
+        color: var(--text-dark);
+        font-weight: 600;
+        font-size: 0.95rem;
+        transition: color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 5px;
       }
 
+      .nav-link:hover {
+        color: var(--primary-color);
+      }
+
+      /* --- MAIN LAYOUT --- */
       .history-wrapper {
         max-width: 800px;
-        margin: 40px auto;
+        margin: 40px auto 60px;
         padding: 0 20px;
       }
+      
       .main-card {
         background: var(--white);
         border-radius: var(--radius);
@@ -77,66 +107,93 @@
         padding-bottom: 20px;
         margin-bottom: 30px;
       }
+      
       .header-section h1 {
         color: var(--primary-color);
+        margin: 0 0 5px 0;
+        font-size: 1.8rem;
+      }
+      
+      #userNameDisplay {
+        color: var(--text-light);
+        font-weight: 500;
+        font-size: 1rem;
+      }
+
+      /* --- HISTORY ITEM CARD --- */
+      .history-list {
+        list-style: none;
+        padding: 0;
         margin: 0;
       }
 
-      /* --- CARD ITEM --- */
       .history-item {
         background: #fff;
         border: 1px solid #eee;
-        border-radius: 10px;
-        padding: 20px;
+        border-radius: 12px;
+        padding: 25px;
         margin-bottom: 20px;
-        transition: transform 0.2s;
+        transition: all 0.3s ease;
         position: relative;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.02);
       }
+      
       .history-item:hover {
         transform: translateY(-3px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.08);
       }
 
-      .item-merah {
-        border-left: 6px solid #e74c3c;
-        background: #fff5f5;
-      }
-      .item-kuning {
-        border-left: 6px solid #f1c40f;
-        background: #fffae6;
-      }
-      .item-hijau {
-        border-left: 6px solid #2ecc71;
-        background: #f0fcf6;
-      }
+      /* Indikator Warna Samping */
+      .item-merah { border-left: 6px solid var(--danger-color); background: linear-gradient(to right, #fff5f5 0%, #fff 20%); }
+      .item-kuning { border-left: 6px solid var(--warning-color); background: linear-gradient(to right, #fffae6 0%, #fff 20%); }
+      .item-hijau { border-left: 6px solid var(--accent-color); background: linear-gradient(to right, #f0fcf6 0%, #fff 20%); }
 
+      /* Header Kartu (Tanggal & Status) */
       .history-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+        gap: 10px;
       }
+      
       .history-date {
-        font-weight: 500;
-        color: #7f8c8d;
+        font-weight: 600;
+        color: var(--text-dark);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
+
+      /* Grouping Badges */
+      .badges-group { display: flex; gap: 8px; align-items: center; }
+
       .result-badge {
-        padding: 4px 10px;
-        border-radius: 4px;
-        font-weight: bold;
-        font-size: 0.85rem;
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
       }
-      .badge-merah {
-        color: #c0392b;
-        background: #fadbd8;
-      }
-      .badge-kuning {
-        color: #d35400;
-        background: #fdebd0;
-      }
-      .badge-hijau {
-        color: #27ae60;
-        background: #d5f5e3;
+      
+      .badge-merah { color: var(--danger-color); background: #fadbd8; }
+      .badge-kuning { color: #d35400; background: #fdebd0; }
+      .badge-hijau { color: #27ae60; background: #d5f5e3; }
+      
+      /* Badge AI */
+      .badge-ai { color: #2980b9; background: #e3f2fd; border: 1px solid #b3d7ff; }
+
+      .recommendation-text {
+        font-size: 0.95rem;
+        color: #555;
+        background: #f9f9f9;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        border: 1px dashed #ddd;
       }
 
       /* --- ACTION BUTTONS --- */
@@ -144,11 +201,13 @@
         display: flex;
         gap: 10px;
         margin-top: 15px;
-        border-top: 1px dashed #ddd;
         padding-top: 15px;
+        border-top: 1px solid #eee;
+        justify-content: flex-start;
       }
+      
       .btn-action {
-        padding: 8px 15px;
+        padding: 8px 16px;
         border: none;
         border-radius: 6px;
         cursor: pointer;
@@ -156,251 +215,170 @@
         font-size: 0.85rem;
         transition: 0.2s;
         color: white;
-        display: flex;
+        display: inline-flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
+        text-decoration: none;
       }
-
-      .btn-view {
-        background-color: #3498db;
+      
+      .btn-view { background-color: var(--primary-color); }
+      .btn-view:hover { background-color: var(--primary-dark); }
+      
+      .btn-pdf { background-color: #9b59b6; }
+      .btn-pdf:hover { background-color: #8e44ad; }
+      
+      .btn-delete { 
+        background-color: transparent; 
+        color: var(--danger-color); 
+        border: 1px solid var(--danger-color);
+        margin-left: auto; /* Dorong ke kanan */
       }
-      .btn-view:hover {
-        background-color: #2980b9;
-      }
-
-      .btn-pdf {
-        background-color: #9b59b6;
-      }
-      .btn-pdf:hover {
-        background-color: #8e44ad;
-      }
-
-      .btn-delete {
-        background-color: #e74c3c;
-        margin-left: auto;
-      } /* Paling kanan */
-      .btn-delete:hover {
-        background-color: #c0392b;
-      }
-
-      /* --- MODAL UMUM (Styling Dasar) --- */
-      .modal {
-        display: none;
-        position: fixed;
-        z-index: 2000;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(3px);
-        animation: fadeIn 0.3s ease;
+      .btn-delete:hover { 
+        background-color: var(--danger-color); 
+        color: white; 
       }
 
       /* --- MODAL DETAIL --- */
-      .modal-content-detail {
-        background: #fff;
-        margin: 5% auto;
-        padding: 30px;
-        border-radius: 12px;
-        width: 90%;
-        max-width: 600px;
-        position: relative;
-        max-height: 80vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-        animation: slideUp 0.4s ease;
+      .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); animation: fadeIn 0.3s ease; }
+      .modal-content-detail { 
+          background: #fff; margin: 5% auto; padding: 0; border-radius: 16px; 
+          width: 90%; max-width: 600px; position: relative; max-height: 85vh; overflow: hidden; 
+          display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+          animation: slideUp 0.4s ease;
       }
-      .close-button {
-        float: right;
-        font-size: 28px;
-        cursor: pointer;
-        color: #aaa;
-        transition: 0.2s;
-      }
-      .close-button:hover {
-        color: #e74c3c;
-      }
+      
+      .detail-header { padding: 20px; background: var(--primary-color); color: white; display: flex; justify-content: space-between; align-items: center; }
+      .detail-header h2 { margin: 0; font-size: 1.2rem; color: white; }
+      .close-button { color: white; font-size: 24px; cursor: pointer; opacity: 0.8; transition: 0.2s; }
+      .close-button:hover { opacity: 1; }
+      
+      .detail-body { padding: 25px; overflow-y: auto; }
+      
+      .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
+      .detail-item { background: #f8f9fa; padding: 10px; border-radius: 6px; font-size: 0.9rem; border: 1px solid #eee; }
+      .detail-item strong { display: block; font-size: 0.8rem; color: #888; margin-bottom: 2px; }
 
-      .detail-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        margin-top: 15px;
+      /* AI Analysis Box in Modal */
+      .ai-box {
+          margin-top: 20px;
+          padding: 15px;
+          background-color: #f0f9ff;
+          border: 1px solid #bae6fd;
+          border-radius: 8px;
       }
-      .detail-item {
-        background: #f8f9fa;
-        padding: 8px;
-        border-radius: 4px;
-        font-size: 0.9rem;
-      }
+      .ai-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #93c5fd; padding-bottom: 5px; }
+      .ai-title { color: #0369a1; font-weight: 700; font-size: 1rem; }
+      .ai-prob { font-size: 0.9rem; color: #0284c7; background: #fff; padding: 2px 8px; border-radius: 4px; }
+      .ai-result-text { font-size: 1.1rem; font-weight: 700; }
+      .ai-pos { color: var(--danger-color); }
+      .ai-neg { color: var(--accent-color); }
 
-      /* --- MODAL ALERT & CONFIRM (Styling Cantik) --- */
-      .confirm-modal-content {
-        background-color: var(--white);
-        margin: 15% auto;
-        padding: 30px;
-        border-radius: 16px;
-        width: 90%;
-        max-width: 380px;
-        text-align: center;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        animation: slideUp 0.3s ease;
+      /* --- MODAL CONFIRM & ALERT --- */
+      .confirm-modal-content { 
+          background: var(--white); margin: 0; padding: 30px; border-radius: 16px; 
+          width: 90%; max-width: 350px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+          position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+          animation: zoomIn 0.3s ease;
       }
-
-      .confirm-modal-content h3 {
-        color: var(--primary-color);
-        font-size: 1.4rem;
-        margin-top: 0;
-        margin-bottom: 10px;
-      }
-      .confirm-modal-content p {
-        color: #666;
-        font-size: 1rem;
-        margin-bottom: 25px;
-      }
-
-      .confirm-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-      }
-      .confirm-buttons button {
-        padding: 10px 25px;
-        border: none;
-        border-radius: 50px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
-      }
-      .confirm-buttons button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
-
-      /* --- ANIMATIONS --- */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-      @keyframes slideUp {
-        from {
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
+      .confirm-modal-content h3 { color: var(--primary-color); margin: 0 0 10px; font-size: 1.4rem; }
+      .confirm-buttons { display: flex; justify-content: center; gap: 10px; margin-top: 25px; }
+      .confirm-buttons button { padding: 10px 25px; border-radius: 50px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; }
+      .confirm-buttons button:hover { transform: translateY(-2px); }
 
       /* --- EMPTY STATE --- */
-      .empty-state {
-        text-align: center;
-        padding: 40px;
-        color: #7f8c8d;
-        display: none;
-      }
-      .empty-btn {
-        display: inline-block;
-        margin-top: 15px;
-        padding: 10px 20px;
-        background: var(--primary-color);
-        color: white;
-        text-decoration: none;
-        border-radius: 20px;
-        font-weight: 600;
+      .empty-state { text-align: center; padding: 60px 20px; color: var(--text-light); display: none; }
+      .empty-icon { font-size: 4rem; margin-bottom: 15px; opacity: 0.3; }
+      .empty-btn { display: inline-block; margin-top: 20px; padding: 12px 30px; background: var(--primary-color); color: white; text-decoration: none; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3); transition: 0.3s; }
+      .empty-btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+
+      /* --- ANIMATIONS --- */
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes zoomIn { from { opacity: 0; transform: translate(-50%, -60%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+      /* --- RESPONSIVE MOBILE --- */
+      @media (max-width: 600px) {
+        .nav-container { padding: 0 15px; }
+        .main-card { padding: 25px 20px; }
+        .header-section h1 { font-size: 1.5rem; }
+        
+        .history-header { flex-direction: column; align-items: flex-start; gap: 5px; }
+        .result-badge { font-size: 0.75rem; }
+        
+        .action-buttons { flex-wrap: wrap; }
+        .btn-action { flex: 1; justify-content: center; text-align: center; font-size: 0.8rem; padding: 10px; }
+        .btn-delete { flex: 1 1 100%; margin-left: 0; margin-top: 5px; } /* Delete full width di bawah */
+        
+        .detail-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
+    
     <nav class="navbar">
       <div class="nav-container">
-        <a href="index.html" class="nav-brand">TB Care</a>
+        <a href="index.html" class="nav-brand">
+           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary-color)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></svg>
+           TB Care
+        </a>
         <a href="index.html" class="nav-link">&larr; Kembali</a>
       </div>
     </nav>
 
     <div class="history-wrapper">
-      <div class="main-card">
-        <div class="header-section">
-          <h1>Riwayat Skrining Saya</h1>
-          <div style="margin-top: 5px; font-weight: 600" id="userNameDisplay">
-            ...
-          </div>
-        </div>
+        <div class="main-card">
+            <div class="header-section">
+                <h1>Riwayat Skrining</h1>
+                <div id="userNameDisplay">Memuat data pengguna...</div>
+            </div>
 
-        <div id="loadingStatus" style="text-align: center">
-          Sedang memuat...
+            <div id="loadingStatus" style="text-align: center; color: #888; margin-top: 40px;">
+                <div style="font-size: 2rem; margin-bottom: 10px;">⏳</div>
+                Sedang memuat riwayat Anda...
+            </div>
+            
+            <ul id="historyList" class="history-list"></ul>
+            
+            <div id="emptyState" class="empty-state">
+                <div class="empty-icon">📂</div>
+                <h3>Belum Ada Riwayat</h3>
+                <p>Anda belum pernah melakukan skrining kesehatan.</p>
+                <a href="index.html" class="empty-btn">Mulai Skrining Sekarang</a>
+            </div>
         </div>
-
-        <ul id="historyList" class="history-list"></ul>
-
-        <div id="emptyState" class="empty-state">
-          <h3>Belum Ada Riwayat</h3>
-          <p>Anda belum pernah melakukan skrining.</p>
-          <a href="index.html" class="empty-btn">Mulai Skrining</a>
-        </div>
-      </div>
     </div>
 
     <div id="detailModal" class="modal">
-      <div class="modal-content-detail">
-        <span class="close-button" onclick="closeDetailModal()">&times;</span>
-        <h2
-          style="
-            color: #3498db;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-          "
-        >
-          Detail Skrining
-        </h2>
-        <div id="detailContent"></div>
-      </div>
+        <div class="modal-content-detail">
+            <div class="detail-header">
+                <h2>Detail Skrining</h2>
+                <span class="close-button" onclick="closeDetailModal()">&times;</span>
+            </div>
+            <div class="detail-body" id="detailContent">
+                </div>
+        </div>
     </div>
 
     <div id="deleteConfirmModal" class="modal">
       <div class="confirm-modal-content">
-        <h3 style="color: #e74c3c">Hapus Riwayat?</h3>
-        <p>
-          Data ini akan dihapus secara permanen dan tidak dapat dikembalikan.
-        </p>
+        <h3 style="color: var(--danger-color);">Hapus Riwayat?</h3>
+        <p>Data ini akan dihapus permanen.</p>
         <div class="confirm-buttons">
-          <button
-            id="btnConfirmDelete"
-            style="background-color: #e74c3c; color: white"
-          >
-            Ya, Hapus
-          </button>
-          <button
-            onclick="closeDeleteModal()"
-            style="background-color: #bdc3c7; color: #333"
-          >
-            Batal
-          </button>
+          <button id="btnConfirmDelete" style="background-color: var(--danger-color); color: white;">Hapus</button>
+          <button onclick="closeDeleteModal()" style="background-color: #eee; color: #333;">Batal</button>
         </div>
       </div>
     </div>
 
     <div id="messageAlertModal" class="modal">
-      <div class="confirm-modal-content">
-        <h3 id="alertTitle">Info</h3>
-        <p id="alertMessage">Pesan...</p>
-        <div class="confirm-buttons">
-          <button
-            onclick="closeAlertModal()"
-            style="background-color: #3498db; color: white"
-          >
-            OK
-          </button>
+        <div class="confirm-modal-content">
+          <h3 id="alertTitle">Info</h3>
+          <p id="alertMessage">Pesan...</p>
+          <div class="confirm-buttons">
+            <button onclick="closeAlertModal()" style="background-color: var(--primary-color); color: white;">OK</button>
+          </div>
         </div>
       </div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
@@ -409,55 +387,38 @@
       const USER_ID_KEY = "currentUserId";
       const USER_NAME_KEY = "currentUserName";
       let globalHistoryData = [];
-      let deleteTargetId = null; // Menyimpan ID yang akan dihapus
+      let deleteTargetId = null; 
 
       document.addEventListener("DOMContentLoaded", () => {
         const userId = localStorage.getItem(USER_ID_KEY);
         if (!userId) {
           customAlert("Harap login terlebih dahulu.", "Akses Ditolak");
-          setTimeout(() => {
-            window.location.href = "index.html";
-          }, 1500);
+          setTimeout(() => { window.location.href = "index.html"; }, 1500);
           return;
         }
-        document.getElementById("userNameDisplay").textContent =
-          localStorage.getItem(USER_NAME_KEY);
+        document.getElementById("userNameDisplay").textContent = localStorage.getItem(USER_NAME_KEY) || 'Pengguna';
         loadHistory(userId);
       });
 
-      // --- UTILITY: CUSTOM ALERTS & MODALS ---
+      // --- UTILITY FUNCTIONS ---
       function customAlert(message, title = "Informasi") {
-        document.getElementById("alertTitle").textContent = title;
-        document.getElementById("alertMessage").textContent = message;
-        document.getElementById("messageAlertModal").style.display = "block";
+          document.getElementById('alertTitle').textContent = title;
+          document.getElementById('alertMessage').textContent = message;
+          document.getElementById('messageAlertModal').style.display = 'block';
       }
+      function closeAlertModal() { document.getElementById('messageAlertModal').style.display = 'none'; }
+      function showDeleteModal(id) { deleteTargetId = id; document.getElementById('deleteConfirmModal').style.display = 'block'; }
+      function closeDeleteModal() { deleteTargetId = null; document.getElementById('deleteConfirmModal').style.display = 'none'; }
+      
+      document.getElementById('btnConfirmDelete').addEventListener('click', () => {
+          if (deleteTargetId) { deleteHistory(deleteTargetId); closeDeleteModal(); }
+      });
 
-      function closeAlertModal() {
-        document.getElementById("messageAlertModal").style.display = "none";
-      }
+      window.onclick = function (e) {
+        if (e.target.classList.contains('modal')) e.target.style.display = 'none';
+      };
 
-      function showDeleteModal(id) {
-        deleteTargetId = id;
-        document.getElementById("deleteConfirmModal").style.display = "block";
-      }
-
-      function closeDeleteModal() {
-        deleteTargetId = null;
-        document.getElementById("deleteConfirmModal").style.display = "none";
-      }
-
-      // Listener Tombol Konfirmasi Hapus
-      document
-        .getElementById("btnConfirmDelete")
-        .addEventListener("click", () => {
-          if (deleteTargetId) {
-            deleteHistory(deleteTargetId);
-            closeDeleteModal();
-          }
-        });
-
-      // --- LOGIC UTAMA ---
-
+      // --- DATA LOADING ---
       async function loadHistory(userId) {
         try {
           const response = await fetch(`/api/history/${userId}`);
@@ -471,8 +432,7 @@
             document.getElementById("emptyState").style.display = "block";
           }
         } catch (error) {
-          customAlert("Gagal memuat riwayat dari server.", "Error Koneksi");
-          console.error(error);
+            customAlert("Gagal memuat riwayat. Cek koneksi internet.", "Error");
         }
       }
 
@@ -481,23 +441,29 @@
         list.innerHTML = "";
 
         data.forEach((item, index) => {
-          const date = new Date(item.tanggalSkrining).toLocaleDateString(
-            "id-ID",
-            { dateStyle: "full" }
-          );
+          const date = new Date(item.tanggalSkrining).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
           const pitaColor = item.pitaLila.toLowerCase();
+          
+          // Badge untuk AI (Jika ada data AI)
+          let aiBadge = '';
+          if (item.aiAnalysis && item.aiAnalysis !== '-' && item.aiAnalysis !== 'Tidak Terdeteksi') {
+              aiBadge = `<span class="result-badge badge-ai">🤖 AI</span>`;
+          }
 
           const li = document.createElement("li");
           li.className = `history-item item-${pitaColor}`;
           li.innerHTML = `
                     <div class="history-header">
-                        <span class="history-date">${date}</span>
-                        <span class="result-badge badge-${pitaColor}">${item.pitaLila} (Skor: ${item.totalScore})</span>
+                        <div class="history-date">📅 ${date}</div>
+                        <div class="badges-group">
+                            ${aiBadge}
+                            <div class="result-badge badge-${pitaColor}">${item.pitaLila}</div>
+                        </div>
                     </div>
-                    <p style="font-size: 0.9em; color: #555;">${item.rekomendasi}</p>
+                    <div class="recommendation-text">${item.rekomendasi}</div>
                     
                     <div class="action-buttons">
-                        <button class="btn-action btn-view" onclick="viewDetail(${index})">👁️ Lihat Detail</button>
+                        <button class="btn-action btn-view" onclick="viewDetail(${index})">👁️ Detail</button>
                         <button class="btn-action btn-pdf" onclick="exportPdf(${index})">📄 PDF</button>
                         <button class="btn-action btn-delete" onclick="showDeleteModal('${item._id}')">🗑️ Hapus</button>
                     </div>
@@ -506,25 +472,57 @@
         });
       }
 
-      // --- FITUR 1: LIHAT DETAIL ---
+      // --- DETAIL MODAL DENGAN AI ---
       window.viewDetail = function (index) {
         const item = globalHistoryData[index];
         const content = document.getElementById("detailContent");
+        
+        let audioHtml = item.audioFilePath ? `<a href="/${item.audioFilePath}" target="_blank" style="color:var(--primary-color); font-weight:600;">🎧 Putar Audio Rekaman</a>` : '-';
+        
+        // HTML untuk Hasil AI
+        let aiResultSection = '';
+        if (item.aiAnalysis && item.aiAnalysis !== '-' && item.aiAnalysis !== 'Tidak Terdeteksi') {
+            const prob = (parseFloat(item.aiProbability) * 100).toFixed(0);
+            const aiColorClass = item.aiAnalysis.includes('Positif') ? 'ai-pos' : 'ai-neg';
+            
+            aiResultSection = `
+                <div class="ai-result-box">
+                    <div class="ai-header">
+                        <span>🎙️ Analisis Suara Batuk (AI)</span>
+                        <span class="ai-prob">${prob}% Yakin</span>
+                    </div>
+                    <div>
+                        <span style="font-size:0.9rem; color:#64748b;">Hasil Prediksi:</span> 
+                        <strong class="${aiColorClass}" style="font-size:1.1rem; margin-left:5px;">${item.aiAnalysis}</strong>
+                    </div>
+                    <div style="font-size:0.8rem; color:#7f8c8d; margin-top:5px;">
+                        *Skor risiko telah disesuaikan berdasarkan analisis ini.
+                    </div>
+                </div>
+            `;
+        }
 
-        let html = `<p><strong>Nama:</strong> ${item.nama}</p>
-                        <p><strong>Usia:</strong> ${item.usia || "-"} Tahun</p>
-                        <p><strong>PITA LILA:</strong> ${item.pitaLila}</p>
-                        <p><strong>Rekomendasi:</strong> ${item.rekomendasi}</p>
-                        <hr><h4>Jawaban:</h4><div class="detail-grid">`;
+        let html = `
+            <div class="detail-grid">
+                <div class="detail-item"><strong>Nama</strong>${item.nama}</div>
+                <div class="detail-item"><strong>Usia</strong>${item.usia || '-'} Tahun</div>
+                <div class="detail-item"><strong>Hasil</strong>${item.pitaLila} (Skor: ${item.totalScore})</div>
+                <div class="detail-item"><strong>Audio</strong>${audioHtml}</div>
+            </div>
+
+            ${aiResultSection} <div style="margin-top:15px; padding:10px; background:#f8fafc; border-radius:6px; border:1px dashed #ccc;">
+                <strong>Rekomendasi:</strong><br>${item.rekomendasi}
+            </div>
+            
+            <h4 style="margin-top:20px; color:var(--text-light); border-bottom:1px solid #eee; padding-bottom:5px;">Rincian Jawaban</h4>
+            <div class="detail-grid">`;
 
         if (item.dataSkrining) {
           Object.entries(item.dataSkrining).forEach(([k, v]) => {
             if (v === "Ya" || v === "Tidak") {
-              let key = k
-                .replace(/([A-Z])/g, " $1")
-                .trim()
-                .replace(/([a-z])([A-Z])/g, "$1 $2"); // Format camelCase
-              html += `<div class="detail-item"><strong>${key}:</strong> ${v}</div>`;
+              let key = k.replace(/([A-Z])/g, " $1").trim().replace(/([a-z])([A-Z])/g, "$1 $2");
+              let color = v === "Ya" ? "#e74c3c" : "#2ecc71";
+              html += `<div class="detail-item"><strong>${key}</strong><span style="color:${color}; font-weight:bold;">${v}</span></div>`;
             }
           });
         }
@@ -533,71 +531,61 @@
         document.getElementById("detailModal").style.display = "block";
       };
 
-      window.closeDetailModal = function () {
-        document.getElementById("detailModal").style.display = "none";
-      };
+      window.closeDetailModal = function () { document.getElementById("detailModal").style.display = "none"; };
 
-      window.onclick = function (e) {
-        if (e.target == document.getElementById("detailModal"))
-          closeDetailModal();
-        if (e.target == document.getElementById("deleteConfirmModal"))
-          closeDeleteModal();
-        if (e.target == document.getElementById("messageAlertModal"))
-          closeAlertModal();
-      };
-
-      // --- FITUR 2: EKSPOR PDF ---
+      // --- EXPORT PDF ---
       window.exportPdf = function (index) {
         const item = globalHistoryData[index];
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        doc.setFontSize(16);
-        doc.text("Hasil Skrining TB", 14, 20);
-        doc.setFontSize(10);
-        doc.text(
-          `Tanggal: ${new Date(item.tanggalSkrining).toLocaleDateString()}`,
-          14,
-          30
-        );
-        doc.text(`Nama: ${item.nama}`, 14, 35);
-        doc.text(`Hasil: ${item.pitaLila} (Skor: ${item.totalScore})`, 14, 40);
+        doc.setFillColor(52, 152, 219); doc.rect(0, 0, 210, 30, 'F');
+        doc.setTextColor(255); doc.setFontSize(18); doc.text("Hasil Skrining TB Care", 105, 20, null, null, "center");
 
-        const splitRec = doc.splitTextToSize(
-          `Rekomendasi: ${item.rekomendasi}`,
-          180
-        );
-        doc.text(splitRec, 14, 50);
+        doc.setTextColor(0); doc.setFontSize(10);
+        doc.text(`Tanggal: ${new Date(item.tanggalSkrining).toLocaleDateString()}`, 14, 45);
+        doc.text(`Nama: ${item.nama}`, 14, 50);
+        
+        const resColor = item.pitaLila === 'Merah' ? [231, 76, 60] : item.pitaLila === 'Kuning' ? [243, 156, 18] : [46, 204, 113];
+        doc.setTextColor(resColor[0], resColor[1], resColor[2]); doc.setFontSize(14);
+        doc.text(`Hasil: ${item.pitaLila} (Skor: ${item.totalScore})`, 14, 60);
+
+        doc.setTextColor(60); doc.setFontSize(10);
+        const splitRec = doc.splitTextToSize(`Saran: ${item.rekomendasi}`, 180);
+        doc.text(splitRec, 14, 70);
+
+        // Tambahkan info AI ke PDF jika ada
+        if (item.aiAnalysis) {
+             doc.setTextColor(0);
+             doc.text(`Analisis AI: ${item.aiAnalysis} (${(parseFloat(item.aiProbability)*100).toFixed(0)}%)`, 14, 80);
+        }
 
         const rows = [];
         Object.entries(item.dataSkrining).forEach(([k, v]) => {
-          if (v === "Ya" || v === "Tidak")
-            rows.push([k.replace(/([A-Z])/g, " $1"), v]);
+          if (v === "Ya" || v === "Tidak") rows.push([k.replace(/([A-Z])/g, " $1"), v]);
         });
 
-        doc.autoTable({
-          startY: 65,
-          head: [["Pertanyaan", "Jawaban"]],
-          body: rows,
-        });
+        doc.autoTable({ startY: 90, head: [["Pertanyaan", "Jawaban"]], body: rows, theme:'grid', headStyles:{fillColor:[52, 152, 219]} });
         doc.save(`skrining_${item.nama}.pdf`);
       };
 
-      // --- FITUR 3: HAPUS ---
+      // --- DELETE ---
       async function deleteHistory(id) {
         try {
-          const response = await fetch(`/api/skrining/${id}`, {
-            method: "DELETE",
-          });
+          const response = await fetch(`/api/skrining/${id}`, { method: "DELETE" });
+          
+          const contentType = response.headers.get("content-type");
+          if (!contentType || !contentType.includes("application/json")) throw new Error("Server Error (HTML Response)");
+
           const result = await response.json();
           if (result.status === "sukses") {
             customAlert("Data berhasil dihapus.", "Sukses");
-            loadHistory(localStorage.getItem(USER_ID_KEY)); // Reload
+            loadHistory(localStorage.getItem(USER_ID_KEY));
           } else {
             customAlert("Gagal menghapus: " + result.message, "Gagal");
           }
         } catch (e) {
-          customAlert("Terjadi kesalahan server.", "Error");
+            customAlert("Kesalahan: " + e.message, "Error Sistem");
         }
       }
     </script>

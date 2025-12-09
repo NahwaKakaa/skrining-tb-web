@@ -10,6 +10,16 @@
     />
     <link rel="stylesheet" href="style.css" />
     <style>
+      /* --- RESET AGGRESSIVE UNTUK MENGHILANGKAN SPACE BAWAAN --- */
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-width: 320px;
+        overflow-x: hidden;
+      }
+      /* -------------------------------------------------------- */
+
       :root {
         --primary-color: #3498db;
         --primary-dark: #2980b9;
@@ -169,15 +179,11 @@
         border: 0;
       }
 
-      .image-placeholder {
-        background-color: #eef2f3;
-        height: 300px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #95a5a6;
-        font-weight: 500;
-        border: 2px dashed #bdc3c7;
+      /* Class khusus untuk gambar agar responsif */
+      .responsive-img {
+        width: 100%;
+        height: auto;
+        display: block;
         border-radius: var(--radius);
       }
 
@@ -259,164 +265,119 @@
 
       /* Responsive */
       @media (max-width: 600px) {
-        .edu-header h1 {
-          font-size: 2rem;
-        }
-        .edu-card {
-          padding: 25px;
-        }
-        .gejala-grid {
-          grid-template-columns: 1fr;
-        }
+        .edu-header h1 { font-size: 2rem; }
+        .edu-card { padding: 25px; }
+        .gejala-grid { grid-template-columns: 1fr; }
       }
     </style>
   </head>
   <body>
+    
     <nav class="navbar">
       <div class="nav-container">
         <a href="index.html" class="nav-brand">
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"
-            ></path>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>
           </svg>
           TB Care
         </a>
-        <a href="index.html" class="nav-link"> &larr; Kembali ke Skrining </a>
+        <a href="index.html" class="nav-link">
+            &larr; Kembali ke Skrining
+        </a>
       </div>
     </nav>
 
     <header class="edu-header">
-      <h1>
-        Informasi & Edukasi <br />
-        Tuberkulosis (TB)
-      </h1>
-      <p>
-        Memahami penyakit, mengenali gejala, dan langkah pencegahan demi
-        kesehatan bersama.
-      </p>
+        <h1>Pusat Informasi & Edukasi <br> Tuberkulosis (TB)</h1>
+        <p>Kenali penyakitnya, pahami gejalanya, dan cegah penularannya demi kesehatan kita bersama.</p>
     </header>
 
     <div class="content-wrapper">
-      <div class="edu-card">
-        <h3>🔬 Apa Itu Tuberkulosis?</h3>
-        <p>
-          Tuberkulosis (TB) adalah penyakit infeksi menular yang disebabkan oleh
-          bakteri <strong><i>Mycobacterium tuberculosis</i></strong
-          >. Meskipun paling sering menyerang paru-paru, TB juga dapat berdampak
-          pada organ lain seperti tulang, kelenjar getah bening, dan otak.
-        </p>
-        <p>
-          Penularan terjadi melalui udara (<i>airborne</i>) lewat percikan dahak
-          (droplet) saat penderita batuk, bersin, atau berbicara.
-        </p>
-
-        <div class="media-container">
-          <div class="video-responsive">
-            <iframe
-              src="https://www.youtube.com/embed/VIDEO_ID"
-              title="Video Edukasi TB"
-              allowfullscreen
-            ></iframe>
-          </div>
+        
+        <div class="edu-card">
+            <h3>🔬 Apa Itu Tuberkulosis?</h3>
+            <p>
+                Tuberkulosis (TB) adalah penyakit menular yang disebabkan oleh infeksi bakteri <strong><i>Mycobacterium tuberculosis</i></strong>. 
+                Meskipun organ utama yang diserang adalah paru-paru, bakteri TB juga dapat menyebar dan menginfeksi bagian tubuh lain seperti tulang, kelenjar getah bening, hingga otak.
+            </p>
+            <p>
+                Penyakit ini menular melalui udara (<i>airborne</i>). Ketika penderita TB batuk, bersin, atau berbicara, mereka melepaskan percikan dahak mikroskopis (droplet) yang mengandung bakteri ke udara, yang kemudian dapat terhirup oleh orang lain.
+            </p>
+            
+            <div class="media-container">
+                <div class="video-responsive">
+                    <iframe src="https://www.youtube.com/embed/TiBR8v7WAGg" title="Video Edukasi TB" allowfullscreen></iframe>
+                </div>
+            </div>
         </div>
-      </div>
 
-      <div class="edu-card">
-        <h3>⚠️ Gejala Umum TB</h3>
-        <p>
-          Waspadai jika Anda atau kerabat mengalami gejala-gejala berikut dalam
-          jangka waktu lama:
-        </p>
-
-        <div class="gejala-grid">
-          <div class="gejala-item">
-            <span>😷</span> Batuk lebih dari 2 minggu
-          </div>
-          <div class="gejala-item">
-            <span>😰</span> Berkeringat di malam hari tanpa aktivitas
-          </div>
-          <div class="gejala-item"><span>🍽️</span> Nafsu makan berkurang</div>
-          <div class="gejala-item">
-            <span>🫁</span> Mengalami sesak pada pernafasan
-          </div>
-          <div class="gejala-item">
-            <span>🩸</span> Dahak dengan bercak darah
-          </div>
-          <div class="gejala-item">
-            <span>😩</span> Malaise (lelah, tidak nyaman)
-          </div>
-          <div class="gejala-item"><span>📉</span> Penurunan berat badan</div>
-          <div class="gejala-item"><span>🤒</span> Demam dan menggigil</div>
+        <div class="edu-card">
+            <h3>⚠️ Gejala Umum TB</h3>
+            <p>Segera lakukan pemeriksaan medis jika Anda atau kerabat mengalami gejala-gejala berikut dalam jangka waktu yang lama:</p>
+            
+            <div class="gejala-grid">
+                <div class="gejala-item"><span>😷</span> Batuk berdahak > 2 minggu</div>
+                <div class="gejala-item"><span>😰</span> Berkeringat di malam hari</div>
+                <div class="gejala-item"><span>🍽️</span> Kehilangan nafsu makan</div>
+                <div class="gejala-item"><span>🫁</span> Sesak napas / Nyeri dada</div>
+                <div class="gejala-item"><span>🩸</span> Dahak bercampur darah</div>
+                <div class="gejala-item"><span>😩</span> Malaise (Lemas berkepanjangan)</div>
+                <div class="gejala-item"><span>📉</span> Berat badan turun drastis</div>
+                <div class="gejala-item"><span>🤒</span> Demam dan menggigil</div>
+            </div>
         </div>
-      </div>
 
-      <div class="edu-card">
-        <h3>🫁 Area Utama Serangan TB</h3>
-        <p>
-          Meskipun utama menyerang paru-paru, TB dapat menyerang organ vital
-          lain.
-        </p>
-
-        <div class="media-container">
-          <div class="image-placeholder">
-            [Area untuk Infografis/Gambar Paru-paru]
-          </div>
+        <div class="edu-card">
+            <h3>🫁 Area Utama Infeksi TB</h3>
+            <p>Paru-paru adalah organ yang paling rentan terhadap infeksi bakteri TB, namun kewaspadaan terhadap gejala di organ lain juga sangat penting.</p>
+            
+            <div class="media-container">
+                <img 
+                    src="https://share.google/images/zpvFSJMUybgnEmOap" 
+                    alt="Infografis Area Serangan TB" 
+                    class="responsive-img"
+                    onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div style=\'text-align:center; padding:20px; background:#f8f9fa; border:2px dashed #ccc; border-radius:8px; color:#666;\'>Gambar tidak dapat dimuat. Pastikan koneksi internet Anda stabil.</div>')"
+                >
+            </div>
         </div>
-      </div>
 
-      <div class="edu-card">
-        <h3>🛡️ Pencegahan & Pengobatan</h3>
-        <p>
-          Langkah-langkah pencegahan penting untuk melindungi diri sendiri dan
-          orang lain:
-        </p>
-        <ul class="pencegahan-list">
-          <li class="pencegahan-item">
-            <div class="check-icon">✓</div>
-            <div>
-              <strong>Konsumsi Obat Teratur:</strong> Bagi pasien TB, konsumsi
-              obat secara teratur sangat penting. Sekitar dua minggu setelah
-              terapi dimulai, risiko penularan menjadi sangat kecil.
-            </div>
-          </li>
-          <li class="pencegahan-item">
-            <div class="check-icon">✓</div>
-            <div>
-              <strong>Etika Batuk:</strong> Pasien TB harus selalu menutup mulut
-              saat batuk atau bersin untuk mencegah percikan droplet menyebar.
-            </div>
-          </li>
-          <li class="pencegahan-item">
-            <div class="check-icon">✓</div>
-            <div>
-              <strong>Ventilasi Udara:</strong> Pastikan rumah memiliki
-              ventilasi yang baik, sehingga udara dapat berganti dengan lancar.
-            </div>
-          </li>
-          <li class="pencegahan-item">
-            <div class="check-icon">✓</div>
-            <div>
-              <strong>Buang Dahak Aman:</strong> Buang dahak pada tempat yang
-              aman dan tertutup (seperti toilet), kemudian siram atau alirkan
-              air.
-            </div>
-          </li>
-        </ul>
-      </div>
 
-      <div class="back-btn-container">
-        <a href="index.html" class="back-btn">Mulai Skrining Sekarang</a>
-      </div>
+        <div class="edu-card">
+            <h3>🛡️ Pencegahan & Pengobatan</h3>
+            <p>Langkah-langkah pencegahan berikut sangat penting untuk memutus rantai penularan dan melindungi orang-orang di sekitar kita:</p>
+            <ul class="pencegahan-list">
+                <li class="pencegahan-item">
+                    <div class="check-icon">✓</div>
+                    <div>
+                        <strong>Pengobatan Tuntas:</strong> Bagi pasien TB, kunci kesembuhan adalah mengonsumsi obat secara teratur dan tuntas sesuai anjuran dokter (biasanya minimal 6 bulan). Ini juga secara drastis menurunkan risiko penularan.
+                    </div>
+                </li>
+                <li class="pencegahan-item">
+                    <div class="check-icon">✓</div>
+                    <div>
+                        <strong>Etika Batuk yang Benar:</strong> Selalu tutup mulut dan hidung saat batuk atau bersin menggunakan tisu atau lengan bagian dalam untuk mencegah penyebaran bakteri ke udara.
+                    </div>
+                </li>
+                <li class="pencegahan-item">
+                    <div class="check-icon">✓</div>
+                    <div>
+                        <strong>Ventilasi Rumah Sehat:</strong> Pastikan rumah memiliki sirkulasi udara yang baik dan akses sinar matahari yang cukup, karena bakteri TB tidak bertahan lama di udara yang segar dan terkena sinar matahari.
+                    </div>
+                </li>
+                <li class="pencegahan-item">
+                    <div class="check-icon">✓</div>
+                    <div>
+                        <strong>Pembuangan Dahak yang Aman:</strong> Jangan membuang dahak sembarangan. Gunakan wadah tertutup atau toilet yang dapat disiram untuk mencegah bakteri menyebar ke lingkungan.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="back-btn-container">
+            <a href="index.html" class="back-btn">Mulai Skrining Sekarang</a>
+        </div>
+
     </div>
+
   </body>
 </html>

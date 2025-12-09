@@ -1,0 +1,6 @@
+tensorflow-cpu
+numpy
+librosa
+scikit-learn
+joblib
+scikit-image
