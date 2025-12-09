@@ -1,26 +1,27 @@
-# Gunakan base image Node + Python
+# Use Node + Python base image
 FROM node:18-bullseye
 
-# Install Python dan dependency dasar
+# Install Python environment
 RUN apt-get update && apt-get install -y python3 python3-pip
 
-# Set direktori kerja
+# Set working directory
 WORKDIR /app
 
-# Copy file Node.js dependencies
+# Copy Node.js deps
 COPY package*.json ./
 RUN npm install
 
-# Copy Python dependencies lalu install (paksa untuk menghindari PEP-668)
+# Copy Python deps and install
 COPY requirements.txt ./
-RUN pip3 install --break-system-packages -r requirements.txt
+RUN python3 -m pip install --upgrade pip
+RUN pip3 install -r requirements.txt
 
-# Copy seluruh project
+# Copy all project files
 COPY . .
 
-# Variabel environment PORT dari Railway
+# Set environment
 ENV PORT=3000
 EXPOSE 3000
 
-# Jalankan server
+# Start server
 CMD ["npm", "start"]
