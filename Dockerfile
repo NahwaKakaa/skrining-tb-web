@@ -1,23 +1,25 @@
-# Base image
-FROM node:18
+FROM node:18-bullseye
+
+# Install Python + pip
+RUN apt-get update && apt-get install -y python3 python3-pip
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy Node.js dependencies
 COPY package*.json ./
 RUN npm install
 
-# Install Python and dependencies
-RUN apt-get update && apt-get install -y python3 python3-pip
-COPY requirements.txt .
-RUN pip3 install -r requirements.txt
+# Copy AI model and Python dependencies
+COPY requirements.txt ./
+RUN pip3 install --break-system-packages -r requirements.txt
 
-# Copy the entire project
+# Copy the rest of the app
 COPY . .
 
-# Expose port for Render (Render will inject PORT env)
-EXPOSE 10000
+# Expose dynamic port
+ENV PORT=3000
+EXPOSE 3000
 
 # Start server
-CMD ["node", "server.js"]
+CMD ["npm", "start"]
