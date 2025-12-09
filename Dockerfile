@@ -1,25 +1,26 @@
+# Gunakan base image Node + Python
 FROM node:18-bullseye
 
-# Install Python + pip
+# Install Python dan dependency dasar
 RUN apt-get update && apt-get install -y python3 python3-pip
 
-# Set working directory
+# Set direktori kerja
 WORKDIR /app
 
-# Copy Node.js dependencies
+# Copy file Node.js dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy AI model and Python dependencies
+# Copy Python dependencies lalu install (paksa untuk menghindari PEP-668)
 COPY requirements.txt ./
 RUN pip3 install --break-system-packages -r requirements.txt
 
-# Copy the rest of the app
+# Copy seluruh project
 COPY . .
 
-# Expose dynamic port
+# Variabel environment PORT dari Railway
 ENV PORT=3000
 EXPOSE 3000
 
-# Start server
+# Jalankan server
 CMD ["npm", "start"]
