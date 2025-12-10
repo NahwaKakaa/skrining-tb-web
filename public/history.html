@@ -444,7 +444,7 @@
           const date = new Date(item.tanggalSkrining).toLocaleDateString("id-ID", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
           const pitaColor = item.pitaLila.toLowerCase();
           
-          // Badge untuk AI (Jika ada data AI)
+          // --- LOGIKA BADGE AI ---
           let aiBadge = '';
           if (item.aiAnalysis && item.aiAnalysis !== '-' && item.aiAnalysis !== 'Tidak Terdeteksi') {
               aiBadge = `<span class="result-badge badge-ai">🤖 AI</span>`;
@@ -472,12 +472,17 @@
         });
       }
 
-      // --- DETAIL MODAL DENGAN AI ---
+      // --- DETAIL MODAL DENGAN AI & FIX AUDIO ---
       window.viewDetail = function (index) {
         const item = globalHistoryData[index];
         const content = document.getElementById("detailContent");
         
-        let audioHtml = item.audioFilePath ? `<a href="/${item.audioFilePath}" target="_blank" style="color:var(--primary-color); font-weight:600;">🎧 Putar Audio Rekaman</a>` : '-';
+        let audioHtml = '-';
+        if (item.audioFilePath) {
+            // FIX: Gunakan URL Cloudinary langsung jika ada, atau tambahkan prefix uploads jika path lokal
+            const url = item.audioFilePath.startsWith('http') ? item.audioFilePath : `/uploads/${item.audioFilePath.split(/[/\\]/).pop()}`;
+            audioHtml = `<a href="${url}" target="_blank" style="color:var(--primary-color); font-weight:600;">🎧 Putar Audio Rekaman</a>`;
+        }
         
         // HTML untuk Hasil AI
         let aiResultSection = '';
@@ -486,7 +491,7 @@
             const aiColorClass = item.aiAnalysis.includes('Positif') ? 'ai-pos' : 'ai-neg';
             
             aiResultSection = `
-                <div class="ai-result-box">
+                <div class="ai-box">
                     <div class="ai-header">
                         <span>🎙️ Analisis Suara Batuk (AI)</span>
                         <span class="ai-prob">${prob}% Yakin</span>
@@ -533,7 +538,7 @@
 
       window.closeDetailModal = function () { document.getElementById("detailModal").style.display = "none"; };
 
-      // --- EXPORT PDF ---
+      // --- EXPORT PDF (DENGAN DATA AI) ---
       window.exportPdf = function (index) {
         const item = globalHistoryData[index];
         const { jsPDF } = window.jspdf;
