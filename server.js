@@ -1,4 +1,4 @@
-// server.js (CLOUDINARY EDITION - FINAL)
+// server.js (OPTIMAL FINAL VERSION - RAILWAY/RENDER READY)
 
 const express = require('express');
 const path = require('path');
@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const { Parser } = require('json2csv');
 const multer = require('multer');
 const fs = require('fs');
+const https = require('https'); // Modul native untuk download file
 const bcrypt = require('bcrypt');
 const { spawn } = require('child_process');
 const cors = require('cors');
@@ -18,8 +19,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const saltRounds = 10;
 
-// --- KONFIGURASI CLOUDINARY ---
-// Pastikan Env Vars ini diisi di Render nanti!
+// --- 2. KONFIGURASI CLOUDINARY ---
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
@@ -42,62 +42,40 @@ mongoose.connect(DB_URL)
   });
 
 // --- SCHEMAS ---
-const UserSchema = new mongoose.Schema({
+const User = mongoose.model('User', new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   namaLengkap: String,
   no_telp: String,
   usia: Number,
-  tinggiBadan: Number,
-  beratBadan: Number,
-  pendidikan: String,
-  pekerjaan: String,
-  jumlahAnggotaKeluarga: Number
-});
-const User = mongoose.model('User', UserSchema);
+  tinggiBadan: Number, beratBadan: Number,
+  pendidikan: String, pekerjaan: String, jumlahAnggotaKeluarga: Number
+}));
 
-const SkriningSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
-  nama: { type: String, required: true },
-  usia: { type: Number, required: false },
-  no_telp: String,
-  dataSkrining: Object,
-  totalScore: Number,
-  pitaLila: String,
-  rekomendasi: String,
-  // audioFilePath sekarang akan berisi URL Cloudinary (https://...)
-  audioFilePath: String,
-  // filename disimpan untuk keperluan hapus file nanti
-  audioPublicId: String, 
-  aiProbability: String,
-  aiAnalysis: String,
+const SkriningResult = mongoose.model('SkriningResult', new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  nama: String, usia: Number, no_telp: String,
+  dataSkrining: Object, totalScore: Number, pitaLila: String, rekomendasi: String,
+  audioFilePath: String, // Berisi URL Cloudinary
+  audioPublicId: String, // ID untuk hapus file di Cloudinary
+  aiProbability: String, aiAnalysis: String,
   tanggalSkrining: { type: Date, default: Date.now }
-});
-const SkriningResult = mongoose.model('SkriningResult', SkriningSchema);
+}));
 
-// --- 2. GANTI MULTER STORAGE KE CLOUDINARY ---
+// --- 3. STORAGE CONFIG (CLOUDINARY) ---
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'tb-care-uploads',
-    
-    // PENTING: Ubah ke 'video' agar Cloudinary menerima mp4/wav/mp3
-    resource_type: 'video', 
-    
-    // Tambahkan 'mp4' ke daftar format yang diizinkan
+    resource_type: 'video', // Wajib 'video' agar menerima mp4/audio
     allowed_formats: ['wav', 'mp3', 'm4a', 'webm', 'ogg', 'mp4'],
-    
     public_id: (req, file) => {
-        const name = (req.body.nama || 'unknown').toString();
-        // Hapus karakter aneh agar aman
-        const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const timestamp = Date.now();
-        return `${safeName}_${timestamp}`;
+        const name = (req.body.nama || 'unknown').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        return `${name}_${Date.now()}`;
     }
   }
 });
-
-const upload = multer({ storage: storage });
+const upload = multer({ storage });
 
 // --- MIDDLEWARE ---
 app.use(cors());
@@ -105,94 +83,82 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- HELPERS ---
-const safeParseInt = (value) => {
-  if (value === null || typeof value === 'undefined' || String(value).trim() === '') return null;
-  const parsed = parseInt(value);
-  return isNaN(parsed) ? null : parsed;
+// Buat folder lokal sementara untuk transit file AI
+const tempDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+
+// --- 4. HELPER: DOWNLOAD FILE (STRATEGI KESTABILAN AI) ---
+const downloadFile = (url, dest) => {
+    return new Promise((resolve, reject) => {
+        const file = fs.createWriteStream(dest);
+        https.get(url, (response) => {
+            if (response.statusCode !== 200) return reject(new Error(`Download gagal: ${response.statusCode}`));
+            response.pipe(file);
+            file.on('finish', () => file.close(resolve));
+        }).on('error', (err) => {
+            fs.unlink(dest, () => {});
+            reject(err);
+        });
+    });
 };
 
-// --- PYTHON SETUP ---
-const PYTHON_BIN = process.env.PYTHON_PATH || 'python3';
-const PYTHON_SCRIPT = path.join(__dirname, 'predict_cough.py'); 
+// --- 5. PYTHON AI HANDLER ---
+// Script Python ada di root folder (sejajar server.js)
+const PYTHON_SCRIPT = path.join(__dirname, 'predict_cough.py');
 
-const spawnPythonPredict = (audioUrl, userAge, timeoutMs = 45000) => {
-  return new Promise((resolve) => {
-    // Cek file script python saja, audioUrl sekarang adalah URL internet
-    if (!fs.existsSync(PYTHON_SCRIPT)) {
-      console.error('Python script TIDAK DITEMUKAN di:', PYTHON_SCRIPT);
-      return resolve({ success: false, message: 'File predict_cough.py hilang!' });
-    }
+const spawnPythonPredict = (localFilePath, userAge) => {
+    return new Promise((resolve) => {
+        if (!fs.existsSync(PYTHON_SCRIPT)) return resolve({ success: false, message: 'Script Python tidak ditemukan' });
 
-    const tryBins = [PYTHON_BIN, 'python'];
-    
-    const tryStart = (index) => {
-      if (index >= tryBins.length) {
-        return resolve({ success: false, message: 'Python tidak terinstall di server.' });
-      }
-      
-      const bin = tryBins[index];
-      let output = '';
-      let stderr = '';
-      
-      try {
-        console.log(`Menjalankan AI pada URL: ${audioUrl}`);
-        const proc = spawn(bin, [PYTHON_SCRIPT, audioUrl, String(userAge)]);
+        // Gunakan 'python3' karena Railway/Docker berbasis Linux
+        const proc = spawn('python3', [PYTHON_SCRIPT, localFilePath, String(userAge)]);
         
-        // Timeout diperpanjang karena download dari URL butuh waktu
+        let output = '';
+        let stderr = '';
+
+        // Timeout 40 detik untuk mencegah server hang
         const timer = setTimeout(() => {
             proc.kill();
-            resolve({ success: false, message: 'AI Timeout (Download/Proses terlalu lama)' });
-        }, timeoutMs);
+            resolve({ success: false, message: 'AI Timeout (Proses terlalu lama)' });
+        }, 40000);
 
-        proc.stdout.on('data', (d) => { output += d.toString(); });
-        proc.stderr.on('data', (d) => { stderr += d.toString(); });
+        proc.stdout.on('data', d => output += d.toString());
+        proc.stderr.on('data', d => stderr += d.toString());
 
         proc.on('close', (code) => {
             clearTimeout(timer);
             if (code !== 0 && !output) {
-                console.error(`Python Error (${bin}):`, stderr);
-                if (index === 0) return tryStart(index + 1);
-                return resolve({ success: false, message: 'Gagal menjalankan Python', stderr });
+                console.error("Python Error:", stderr);
+                return resolve({ success: false, message: 'Python Crash/Error', stderr });
             }
-            
             try {
+                // Cari JSON valid dalam output
                 const jsonMatch = output.match(/\{.*\}/s);
                 if (jsonMatch) {
-                    const result = JSON.parse(jsonMatch[0]);
-                    resolve({ success: true, result });
+                    resolve({ success: true, result: JSON.parse(jsonMatch[0]) });
                 } else {
                     resolve({ success: false, message: 'Output AI bukan JSON valid', raw: output });
                 }
             } catch (e) {
-                resolve({ success: false, message: 'JSON Parse Error', raw: output });
+                resolve({ success: false, message: 'Gagal parsing JSON AI', raw: output });
             }
         });
         
         proc.on('error', (err) => {
             clearTimeout(timer);
-            tryStart(index + 1);
+            resolve({ success: false, message: 'Gagal menjalankan command python3' });
         });
-
-      } catch (err) {
-        tryStart(index + 1);
-      }
-    };
-
-    tryStart(0);
-  });
+    });
 };
 
-// ==========================================
-// ROUTES
-// ==========================================
+// --- ROUTES ---
 
+// 1. Register & Login
 app.post('/api/register', async (req, res) => {
   const { username, password, namaLengkap, no_telp } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-    const newUser = new User({ username, password: hashedPassword, namaLengkap, no_telp });
-    await newUser.save();
+    await new User({ username, password: hashedPassword, namaLengkap, no_telp }).save();
     res.status(201).json({ status: 'sukses', message: 'Registrasi berhasil.' });
   } catch (error) {
     res.status(400).json({ status: 'gagal', message: 'Username sudah digunakan.' });
@@ -203,12 +169,12 @@ app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
   const user = await User.findOne({ username });
   if (!user) return res.status(401).json({ status: 'gagal', message: 'Akun tidak ditemukan.' });
-  
   const match = await bcrypt.compare(password, user.password);
   if (match) res.json({ status: 'sukses', message: 'Login berhasil', userId: user._id, nama: user.namaLengkap });
   else res.status(401).json({ status: 'gagal', message: 'Password salah.' });
 });
 
+// 2. Profile & History
 app.get('/api/profile/:userId', async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select('-password');
@@ -226,49 +192,45 @@ app.get('/api/history/:userId', async (req, res) => {
 app.delete('/api/skrining/:id', async (req, res) => {
   try {
     const result = await SkriningResult.findByIdAndDelete(req.params.id);
-    // Hapus file dari Cloudinary jika ada public_id
+    // Hapus file di Cloudinary juga
     if (result && result.audioPublicId) {
-        cloudinary.uploader.destroy(result.audioPublicId, { resource_type: 'video' }, (err, result) => {
-            if(err) console.error("Cloudinary delete error:", err);
-        });
+        cloudinary.uploader.destroy(result.audioPublicId, { resource_type: 'video' }, ()=>{});
     }
     res.json({ status: 'sukses' });
   } catch (e) { res.status(500).json({ status: 'gagal' }); }
 });
 
-// --- SKRINING CORE (MODIFIED) ---
+// --- 6. SKRINING CORE (DENGAN LOGIKA DOWNLOAD) ---
 app.post('/api/skrining', upload.single('uploadBatuk'), async (req, res) => {
     const data = req.body;
     let totalScore = 0;
     
-    // Cloudinary URL
+    // Cloudinary memberikan URL di file.path dan ID di file.filename
     const audioUrl = req.file ? req.file.path : null; 
     const audioPublicId = req.file ? req.file.filename : null;
 
-    // Rule-based Scoring
+    // Hitung Rule-based Score
     if (data.riwayatTB === 'Ya') totalScore += 5;
     ['batuk2minggu', 'keringatMalam', 'nafsuMakanKurang', 'sesak', 'dahakDarah', 'malaise', 'penurunanBB', 'demamMenggigil'].forEach(k => { if (data[k] === 'Ya') totalScore += 3; });
     ['paparanRumahTB', 'paparanRuanganTertutup', 'paparanRawatTanpaAPD', 'paparanKeluargaTetangga', 'paparanLingkunganPadat'].forEach(k => { if (data[k] === 'Ya') totalScore += 2; });
     ['sikapJarangCuciTangan', 'sikapTidakMaskerBatuk', 'sikapRuanganPadat', 'sikapMenundaPeriksa', 'lingkunganVentilasiKurang', 'lingkunganRumahPadat', 'lingkunganKurangMatahari', 'lingkunganTerpaparAsap', 'lingkunganSanitasiRendah'].forEach(k => { if (data[k] === 'Ya') totalScore += 1; });
 
-    // AI PROCESS WITH DOWNLOAD STRATEGY
+    // PROSES AI (Download URL -> Local -> Python -> Delete Local)
     const aiResult = await (async () => {
         if (!audioUrl) return { score: 0, prob: "0", analysis: "-" };
 
-        // 1. Tentukan path file lokal sementara
+        // Tentukan nama file sementara di server
         const tempFileName = `temp_${Date.now()}.mp4`;
         const tempFilePath = path.join(tempDir, tempFileName);
 
         try {
-            console.log(`Downloading audio from: ${audioUrl}`);
-            // 2. Download file dari Cloudinary ke server lokal
+            console.log(`[AI] Downloading audio: ${audioUrl}`);
             await downloadFile(audioUrl, tempFilePath);
             
-            // 3. Proses file lokal dengan Python
-            console.log(`Processing local file: ${tempFilePath}`);
+            console.log(`[AI] Processing local file: ${tempFilePath}`);
             const out = await spawnPythonPredict(tempFilePath, data.usia || 30);
             
-            // 4. Hapus file sementara (Cleanup)
+            // Hapus file sementara setelah diproses
             if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
 
             if (out.success && out.result && out.result.status === 'success') {
@@ -279,21 +241,19 @@ app.post('/api/skrining', upload.single('uploadBatuk'), async (req, res) => {
                 };
             }
             
-            // Log detail error dari Python result jika ada
-            console.warn('AI Logic Gagal:', out.result || out.message || out.stderr);
+            console.warn('[AI] Warning:', out.message || out.stderr);
             return { score: 0, prob: "0", analysis: "Gagal" };
 
         } catch (e) {
-            console.error("AI Exception:", e);
-            // Pastikan file terhapus jika error
-            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+            console.error("[AI] Exception:", e);
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath); // Cleanup jika error
             return { score: 0, prob: "0", analysis: "Error" };
         }
     })();
 
     totalScore += aiResult.score;
 
-    // Labeling
+    // Labeling Hasil
     let pitaLila = 'Hijau', rekomendasi = 'RISIKO RENDAH. Jaga kesehatan.';
     if (totalScore >= 33) { pitaLila = 'Merah'; rekomendasi = 'RISIKO TINGGI. Segera periksa ke dokter.'; }
     else if (totalScore >= 17) { pitaLila = 'Kuning'; rekomendasi = 'RISIKO SEDANG. Observasi mandiri.'; }
@@ -306,7 +266,7 @@ app.post('/api/skrining', upload.single('uploadBatuk'), async (req, res) => {
             no_telp: data.no_telp,
             dataSkrining: data,
             totalScore, pitaLila, rekomendasi,
-            audioFilePath: audioUrl,
+            audioFilePath: audioUrl, // Simpan URL Cloudinary
             audioPublicId: audioPublicId,
             aiProbability: aiResult.prob,
             aiAnalysis: aiResult.analysis
@@ -314,7 +274,7 @@ app.post('/api/skrining', upload.single('uploadBatuk'), async (req, res) => {
         
         res.json({ status: 'sukses', pitaLila, rekomendasi, totalScore, aiResult });
     } catch (e) { 
-        res.status(500).json({ status: 'gagal', message: 'Gagal Simpan DB' });
+        res.status(500).json({ status: 'gagal', message: 'Gagal Simpan Database' });
     }
 });
 
@@ -332,26 +292,21 @@ app.get('/admin/data/json', async (req, res) => {
     res.json({status:'sukses', results});
 });
 
-app.delete('/api/admin/skrining/:id', async (req, res) => {
-    if(req.query.password !== ADMIN_ACCESS_KEY) return res.status(401).json({status:'gagal'});
-    try {
-        const result = await SkriningResult.findByIdAndDelete(req.params.id);
-        if (result && result.audioPublicId) {
-            cloudinary.uploader.destroy(result.audioPublicId, { resource_type: 'video' }, (err) => {});
-        }
-        res.json({ status: 'sukses' });
-    } catch(e) { res.status(500).json({ status: 'gagal' }); }
-});
-
 app.delete('/api/admin/skrining/batch', async (req, res) => {
     if(req.body.password !== ADMIN_ACCESS_KEY) return res.status(401).json({status:'gagal'});
     const docs = await SkriningResult.find({ _id: { $in: req.body.ids } });
+    // Hapus file audio massal di Cloudinary
     for (const doc of docs) {
-        if (doc.audioPublicId) {
-            cloudinary.uploader.destroy(doc.audioPublicId, { resource_type: 'video' }, (err) => {});
-        }
+        if (doc.audioPublicId) cloudinary.uploader.destroy(doc.audioPublicId, { resource_type: 'video' }, ()=>{}).catch(()=>{});
     }
     await SkriningResult.deleteMany({ _id: { $in: req.body.ids } });
+    res.json({status:'sukses'});
+});
+
+app.delete('/api/admin/skrining/:id', async (req, res) => {
+    if(req.query.password !== ADMIN_ACCESS_KEY) return res.status(401).json({status:'gagal'});
+    const doc = await SkriningResult.findByIdAndDelete(req.params.id);
+    if(doc && doc.audioPublicId) cloudinary.uploader.destroy(doc.audioPublicId, { resource_type: 'video' }, ()=>{}).catch(()=>{});
     res.json({status:'sukses'});
 });
 
@@ -361,9 +316,9 @@ app.get('/admin', (req, res) => {
     } else res.redirect('/index.html');
 });
 
+// --- ERROR HANDLER (Agar tidak crash "object Object") ---
 app.use((err, req, res, next) => {
-    console.error("🔥 ERROR LOG:", JSON.stringify(err, null, 2)); // Ini akan membuka isi [object Object]
-    
+    console.error("🔥 ERROR LOG:", JSON.stringify(err, null, 2));
     if (err instanceof multer.MulterError) {
         return res.status(500).json({ status: 'gagal', message: `Multer Error: ${err.message}` });
     } else if (err) {
