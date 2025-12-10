@@ -236,64 +236,86 @@ app.delete('/api/skrining/:id', async (req, res) => {
   } catch (e) { res.status(500).json({ status: 'gagal' }); }
 });
 
-// --- SKRINING CORE (UPDATED) ---
+// --- SKRINING CORE (MODIFIED) ---
 app.post('/api/skrining', upload.single('uploadBatuk'), async (req, res) => {
-  const data = req.body;
-  let totalScore = 0;
-  
-  // Jika upload sukses, Cloudinary memberikan URL di req.file.path
-  let audioUrl = req.file ? req.file.path : null;
-  let audioPublicId = req.file ? req.file.filename : null;
+    const data = req.body;
+    let totalScore = 0;
+    
+    // Cloudinary URL
+    const audioUrl = req.file ? req.file.path : null; 
+    const audioPublicId = req.file ? req.file.filename : null;
 
-  // Scoring Rule
-  if (data.riwayatTB === 'Ya') totalScore += 5;
-  ['batuk2minggu', 'keringatMalam', 'nafsuMakanKurang', 'sesak', 'dahakDarah', 'malaise', 'penurunanBB', 'demamMenggigil'].forEach(k => { if (data[k] === 'Ya') totalScore += 3; });
-  ['paparanRumahTB', 'paparanRuanganTertutup', 'paparanRawatTanpaAPD', 'paparanKeluargaTetangga', 'paparanLingkunganPadat'].forEach(k => { if (data[k] === 'Ya') totalScore += 2; });
-  ['sikapJarangCuciTangan', 'sikapTidakMaskerBatuk', 'sikapRuanganPadat', 'sikapMenundaPeriksa', 'lingkunganVentilasiKurang', 'lingkunganRumahPadat', 'lingkunganKurangMatahari', 'lingkunganTerpaparAsap', 'lingkunganSanitasiRendah'].forEach(k => { if (data[k] === 'Ya') totalScore += 1; });
+    // Rule-based Scoring
+    if (data.riwayatTB === 'Ya') totalScore += 5;
+    ['batuk2minggu', 'keringatMalam', 'nafsuMakanKurang', 'sesak', 'dahakDarah', 'malaise', 'penurunanBB', 'demamMenggigil'].forEach(k => { if (data[k] === 'Ya') totalScore += 3; });
+    ['paparanRumahTB', 'paparanRuanganTertutup', 'paparanRawatTanpaAPD', 'paparanKeluargaTetangga', 'paparanLingkunganPadat'].forEach(k => { if (data[k] === 'Ya') totalScore += 2; });
+    ['sikapJarangCuciTangan', 'sikapTidakMaskerBatuk', 'sikapRuanganPadat', 'sikapMenundaPeriksa', 'lingkunganVentilasiKurang', 'lingkunganRumahPadat', 'lingkunganKurangMatahari', 'lingkunganTerpaparAsap', 'lingkunganSanitasiRendah'].forEach(k => { if (data[k] === 'Ya') totalScore += 1; });
 
-  // AI Process (Sekarang menerima URL)
-  const aiResult = await (async () => {
-      if (!audioUrl) return { score: 0, prob: "0", analysis: "-" };
-      
-      const userAge = data.usia || 30;
-      // Kirim URL langsung ke Python (Librosa/FFmpeg di docker support URL)
-      const out = await spawnPythonPredict(audioUrl, userAge);
-      
-      if (out.success && out.result && out.result.status === 'success') {
-          return {
-              score: Number(out.result.ml_score || 0),
-              prob: String(out.result.probability || "0"),
-              analysis: out.result.ai_analysis || '-'
-          };
-      }
-      console.warn('AI Gagal:', out.message || out.stderr);
-      return { score: 0, prob: "0", analysis: "Gagal" };
-  })();
+    // AI PROCESS WITH DOWNLOAD STRATEGY
+    const aiResult = await (async () => {
+        if (!audioUrl) return { score: 0, prob: "0", analysis: "-" };
 
-  totalScore += aiResult.score;
+        // 1. Tentukan path file lokal sementara
+        const tempFileName = `temp_${Date.now()}.mp4`;
+        const tempFilePath = path.join(tempDir, tempFileName);
 
-  // Labeling
-  let pitaLila = 'Hijau', rekomendasi = 'RISIKO RENDAH. Jaga kesehatan.';
-  if (totalScore >= 33) { pitaLila = 'Merah'; rekomendasi = 'RISIKO TINGGI. Segera periksa ke dokter.'; }
-  else if (totalScore >= 17) { pitaLila = 'Kuning'; rekomendasi = 'RISIKO SEDANG. Observasi mandiri.'; }
+        try {
+            console.log(`Downloading audio from: ${audioUrl}`);
+            // 2. Download file dari Cloudinary ke server lokal
+            await downloadFile(audioUrl, tempFilePath);
+            
+            // 3. Proses file lokal dengan Python
+            console.log(`Processing local file: ${tempFilePath}`);
+            const out = await spawnPythonPredict(tempFilePath, data.usia || 30);
+            
+            // 4. Hapus file sementara (Cleanup)
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
 
-  const newResult = new SkriningResult({
-    userId: data.currentUserId || null,
-    nama: data.nama || 'Guest',
-    usia: safeParseInt(data.usia),
-    no_telp: data.no_telp,
-    dataSkrining: data,
-    totalScore, pitaLila, rekomendasi,
-    audioFilePath: audioUrl, // Simpan URL Cloudinary
-    audioPublicId: audioPublicId, // Simpan ID untuk hapus nanti
-    aiProbability: aiResult.prob,
-    aiAnalysis: aiResult.analysis
-  });
+            if (out.success && out.result && out.result.status === 'success') {
+                return {
+                    score: Number(out.result.ml_score || 0),
+                    prob: String(out.result.probability || "0"),
+                    analysis: out.result.ai_analysis || '-'
+                };
+            }
+            
+            // Log detail error dari Python result jika ada
+            console.warn('AI Logic Gagal:', out.result || out.message || out.stderr);
+            return { score: 0, prob: "0", analysis: "Gagal" };
 
-  try {
-    await newResult.save();
-    res.json({ status: 'sukses', pitaLila, rekomendasi, totalScore, aiResult });
-  } catch (e) { res.status(500).json({ status: 'gagal', message: 'Gagal simpan DB' }); }
+        } catch (e) {
+            console.error("AI Exception:", e);
+            // Pastikan file terhapus jika error
+            if (fs.existsSync(tempFilePath)) fs.unlinkSync(tempFilePath);
+            return { score: 0, prob: "0", analysis: "Error" };
+        }
+    })();
+
+    totalScore += aiResult.score;
+
+    // Labeling
+    let pitaLila = 'Hijau', rekomendasi = 'RISIKO RENDAH. Jaga kesehatan.';
+    if (totalScore >= 33) { pitaLila = 'Merah'; rekomendasi = 'RISIKO TINGGI. Segera periksa ke dokter.'; }
+    else if (totalScore >= 17) { pitaLila = 'Kuning'; rekomendasi = 'RISIKO SEDANG. Observasi mandiri.'; }
+
+    try {
+        await new SkriningResult({
+            userId: data.currentUserId || null,
+            nama: data.nama || 'Guest',
+            usia: Number(data.usia) || 0,
+            no_telp: data.no_telp,
+            dataSkrining: data,
+            totalScore, pitaLila, rekomendasi,
+            audioFilePath: audioUrl,
+            audioPublicId: audioPublicId,
+            aiProbability: aiResult.prob,
+            aiAnalysis: aiResult.analysis
+        }).save();
+        
+        res.json({ status: 'sukses', pitaLila, rekomendasi, totalScore, aiResult });
+    } catch (e) { 
+        res.status(500).json({ status: 'gagal', message: 'Gagal Simpan DB' });
+    }
 });
 
 // --- ADMIN ROUTES ---
