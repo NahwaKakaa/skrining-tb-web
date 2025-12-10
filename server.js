@@ -79,11 +79,17 @@ const SkriningResult = mongoose.model('SkriningResult', SkriningSchema);
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'tb-care-uploads', // Nama folder di Cloudinary
-    resource_type: 'auto',     // Deteksi otomatis (audio/video)
-    allowed_formats: ['wav', 'mp3', 'm4a', 'webm', 'ogg'],
+    folder: 'tb-care-uploads',
+    
+    // PENTING: Ubah ke 'video' agar Cloudinary menerima mp4/wav/mp3
+    resource_type: 'video', 
+    
+    // Tambahkan 'mp4' ke daftar format yang diizinkan
+    allowed_formats: ['wav', 'mp3', 'm4a', 'webm', 'ogg', 'mp4'],
+    
     public_id: (req, file) => {
         const name = (req.body.nama || 'unknown').toString();
+        // Hapus karakter aneh agar aman
         const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
         const timestamp = Date.now();
         return `${safeName}_${timestamp}`;
