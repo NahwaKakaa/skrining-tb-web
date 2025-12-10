@@ -22,17 +22,22 @@ const ADMIN_KEY_STORAGE = 'adminAccessKey';
 
 // --- DATABASE CONNECTION ---
 // Prefer env var MONGO_URI (Railway variable name). Provide helpful log if missing.
+// --- DATABASE CONNECTION (REVISI TERBARU) ---
 const DB_URL = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/skriningTBDB';
 if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
-  console.warn('⚠️  Warning: Using fallback MongoDB URL (localhost). Set MONGO_URI as environment variable on hosting platform.');
+  console.warn('⚠️  Warning: Menggunakan fallback MongoDB URL (localhost). Set MONGO_URI di environment hosting.');
 }
 
-mongoose.connect(DB_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
+mongoose.connect(DB_URL)
   .then(() => console.log('✅ Terkoneksi ke MongoDB'))
-  .catch(err => console.error('❌ Gagal koneksi ke MongoDB:', err));
+  .catch(err => {
+    console.error('❌ Gagal koneksi ke MongoDB:', err);
+    process.exit(1); // hentikan server jika gagal koneksi
+  });
+
+mongoose.connection.on('error', err => console.error('MongoDB connection error:', err));
+mongoose.connection.on('disconnected', () => console.warn('⚠️ MongoDB disconnected'));
+
 
 // --- SCHEMAS ---
 const UserSchema = new mongoose.Schema({
