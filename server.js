@@ -333,7 +333,18 @@ app.get('/admin', (req, res) => {
     } else res.redirect('/index.html');
 });
 
-// --- START ---
+app.use((err, req, res, next) => {
+    console.error("🔥 ERROR LOG:", JSON.stringify(err, null, 2)); // Ini akan membuka isi [object Object]
+    
+    if (err instanceof multer.MulterError) {
+        return res.status(500).json({ status: 'gagal', message: `Multer Error: ${err.message}` });
+    } else if (err) {
+        return res.status(500).json({ status: 'gagal', message: `Server Error: ${err.message}` });
+    }
+    next();
+});
+
+// --- START SERVER ---
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server siap di port ${PORT}`);
 });
