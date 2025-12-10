@@ -1,8 +1,14 @@
 # Use Node + Python base image
 FROM node:18-bullseye
 
-# Install Python environment
-RUN apt-get update && apt-get install -y python3 python3-pip
+# --- PERBAIKAN DI SINI ---
+# Tambahkan 'ffmpeg' dan 'libsndfile1' agar librosa bisa baca audio
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    ffmpeg \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -13,8 +19,10 @@ RUN npm install
 
 # Copy Python deps and install
 COPY requirements.txt ./
+# Pastikan pip terupdate
 RUN python3 -m pip install --upgrade pip
-RUN pip3 install -r requirements.txt
+# Gunakan --no-cache-dir agar image lebih ringan
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Copy all project files
 COPY . .
@@ -24,4 +32,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Start server
-CMD ["npm", "start"]
+CMD ["node", "server.js"]

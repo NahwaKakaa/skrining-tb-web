@@ -108,7 +108,7 @@ const safeParseInt = (value) => {
 const PYTHON_BIN = process.env.PYTHON_PATH || 'python3';
 
 // Path to predict script (adjust if your script is in another folder)
-const PYTHON_SCRIPT = path.join(__dirname, 'python', 'predict_cough.py');
+const PYTHON_SCRIPT = path.join(__dirname, 'predict_cough.py');
 
 // spawn python with timeout (ms)
 const spawnPythonPredict = (audioPath, userAge, timeoutMs = 20000) => {
