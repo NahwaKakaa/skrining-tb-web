@@ -7,6 +7,7 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css" />
     
     <style>
       /* --- 1. RESET & BASE --- */
@@ -14,54 +15,35 @@
       html, body { margin: 0; padding: 0; width: 100%; min-width: 320px; overflow-x: hidden; }
 
       :root {
-        --primary: #2563eb; --secondary: #1e293b; --success: #10b981; --warning: #f59e0b; --danger: #ef4444; 
-        --bg-body: #f1f5f9; --white: #ffffff; --border: #e2e8f0;
+        --primary: #2563eb; --secondary: #1e293b; --success: #10b981; 
+        --warning: #f59e0b; --danger: #ef4444; --bg-body: #f1f5f9; 
+        --white: #ffffff; --border: #e2e8f0;
         --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); --radius: 12px;
       }
 
       body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); color: var(--secondary); padding-bottom: 50px; }
-
-      /* --- CONTAINER --- */
       .admin-container { max-width: 1250px; margin: 30px auto; padding: 0 20px; }
 
       /* --- HEADER --- */
-      .header-admin {
-        background: var(--white); padding: 20px 25px; border-radius: var(--radius);
-        box-shadow: var(--shadow); margin-bottom: 25px; display: flex; 
-        justify-content: space-between; align-items: center; position: relative; z-index: 50; 
-      }
+      .header-admin { background: var(--white); padding: 20px 25px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 50; }
       .header-left h1 { font-size: 1.5rem; color: var(--secondary); margin: 0; display: flex; align-items: center; gap: 10px; font-weight: 700; }
       
-      .logout-btn {
-        background: #fff1f2; border: 1px solid #fda4af; color: #e11d48;
-        padding: 10px 24px; border-radius: 50px; font-weight: 600; cursor: pointer;
-        transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
-        position: relative; z-index: 100; pointer-events: auto;
-      }
+      .logout-btn { background: #fff1f2; border: 1px solid #fda4af; color: #e11d48; padding: 10px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; z-index: 100; pointer-events: auto; }
       .logout-btn:hover { background: #e11d48; color: white; transform: translateY(-1px); }
 
       /* --- STATS --- */
       .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-      .stat-card {
-        background: var(--white); padding: 20px; border-radius: var(--radius);
-        box-shadow: var(--shadow); border: 1px solid var(--border);
-        display: flex; justify-content: space-between; align-items: center; border-left: 5px solid transparent;
-      }
+      .stat-card { background: var(--white); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; border-left: 5px solid transparent; }
       .stat-info h3 { margin: 0; font-size: 0.85rem; color: #64748b; font-weight: 500; text-transform: uppercase; }
       .stat-info .number { font-size: 1.8rem; font-weight: 700; margin-top: 5px; line-height: 1; }
       .stat-icon { width: 45px; height: 45px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; opacity: 0.8; }
-      
       .card-total { border-color: var(--primary); } .card-total .stat-icon { background: #eff6ff; color: var(--primary); }
       .card-merah { border-color: var(--danger); } .card-merah .stat-icon { background: #fef2f2; color: var(--danger); }
       .card-kuning { border-color: var(--warning); } .card-kuning .stat-icon { background: #fffbeb; color: var(--warning); }
       .card-hijau { border-color: var(--success); } .card-hijau .stat-icon { background: #ecfdf5; color: var(--success); }
 
       /* --- CONTROLS --- */
-      .table-controls {
-        background-color: #f8fafc; padding: 20px; border-radius: var(--radius);
-        border: 1px solid var(--border); margin-bottom: 20px;
-        display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center;
-      }
+      .table-controls { background-color: #f8fafc; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between; align-items: center; }
       .search-group { display: flex; gap: 10px; flex: 1; min-width: 250px; flex-wrap: wrap; }
       .search-box, .filter-box { padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; font-family: inherit; font-size: 0.9rem; background: white; flex: 1; }
       .export-group { display: flex; gap: 10px; }
@@ -81,52 +63,39 @@
       th { padding: 16px 20px; text-align: left; font-weight: 600; color: #475569; }
       td { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: middle; }
       tbody tr:hover { background-color: #f8fafc; }
-      
       .badge { padding: 4px 10px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; display: inline-block; text-align: center; min-width: 80px; }
       .bg-merah { background: #fee2e2; color: #991b1b; } .bg-kuning { background: #fef3c7; color: #b45309; } .bg-hijau { background: #d1fae5; color: #065f46; }
-      
       .action-group { display: flex; gap: 8px; justify-content: center; }
       .action-btn { padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; color: white; font-size: 0.8rem; font-weight: 500; }
       .btn-detail { background: #3b82f6; } .btn-delete { background: #ef4444; }
       input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; accent-color: var(--primary); }
 
-      /* --- PAGINATION --- */
-      .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 20px; background: white; border-top: 1px solid #f1f5f9; }
-      .page-btn { width: 36px; height: 36px; border: 1px solid #e2e8f0; background: white; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #64748b; }
-      .page-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
-      .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
       /* --- MODALS --- */
-      .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 20px; animation: fadeIn 0.2s ease; }
+      .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 20px; }
       .modal.active { display: flex; }
       .modal-box { background: white; border-radius: 16px; width: 100%; max-width: 500px; box-shadow: 0 25px 60px rgba(0,0,0,0.25); animation: zoomIn 0.3s; }
       .modal-box.large { max-width: 700px; display: flex; flex-direction: column; max-height: 90vh; }
-      
       .modal-header { padding: 20px 25px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border-radius: 16px 16px 0 0; }
       .modal-header h2 { margin: 0; font-size: 1.2rem; color: var(--secondary); }
       .close-btn { font-size: 24px; color: #94a3b8; cursor: pointer; transition: 0.2s; } .close-btn:hover { color: var(--danger); }
       .modal-body { padding: 25px; overflow-y: auto; }
       .modal-footer { padding: 15px 25px; border-top: 1px solid #e2e8f0; text-align: right; background: #fff; border-radius: 0 0 16px 16px; }
 
-      /* Detail AI */
+      /* Detail Style */
       .ai-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
       .ai-title { color: #1e40af; font-weight: 700; margin-bottom: 10px; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
       .ai-grid { display: flex; justify-content: space-between; }
-      .ai-label { font-size: 0.75rem; color: #60a5fa; text-transform: uppercase; margin-bottom: 2px; display: block; }
       .ai-val { font-size: 1.1rem; font-weight: 600; color: #1e3a8a; }
-
-      /* Info Grid */
       .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
       .info-box { background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; }
       .info-box label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 4px; text-transform: uppercase; }
-      .info-box span { font-weight: 600; color: var(--secondary); font-size: 0.95rem; }
-      
+      .info-box span { font-weight: 600; color: var(--secondary); font-size: 0.95rem; word-break: break-all; }
       .result-panel { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; margin-bottom: 20px; border-left: 4px solid #ccc; }
       .answers-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; }
       .ans-item { display: flex; justify-content: space-between; padding: 8px 12px; background: #fff; border: 1px solid #f1f5f9; border-radius: 6px; font-size: 0.85rem; }
       .ans-yes { color: var(--danger); font-weight: 700; } .ans-no { color: var(--success); font-weight: 700; }
 
-      /* Confirm & Alert */
+      /* Confirm */
       .confirm-box { max-width: 350px; text-align: center; padding: 30px; }
       .confirm-icon { font-size: 3rem; margin-bottom: 15px; display: block; }
       .confirm-buttons { margin-top: 25px; display: flex; justify-content: center; gap: 10px; }
@@ -137,22 +106,14 @@
 
       @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
       @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-      /* Mobile */
       @media (max-width: 768px) {
-        .admin-container { padding: 0 15px; margin-top: 20px; }
         .header-admin { flex-direction: column; align-items: flex-start; gap: 15px; }
         .logout-btn { align-self: flex-end; width: auto; font-size: 0.85rem; }
         .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-        .stat-card { padding: 15px; flex-direction: column; align-items: flex-start; gap: 10px; }
-        .stat-icon { position: absolute; right: 15px; top: 15px; width: 40px; height: 40px; font-size: 1.2rem; }
         .table-controls { flex-direction: column; align-items: stretch; }
-        .search-group { width: 100%; flex-direction: column; }
-        .export-group { width: 100%; display: flex; } .export-group button { flex: 1; justify-content: center; }
-        th, td { padding: 12px 15px; }
+        .search-group, .export-group { width: 100%; } .export-group button { flex: 1; justify-content: center; }
         .action-group { flex-direction: row; justify-content: center; }
-        .info-grid, .answers-list { grid-template-columns: 1fr; }
       }
     </style>
 </head>
@@ -160,12 +121,8 @@
     
     <div class="admin-container">
       <div class="header-admin">
-        <div class="header-left">
-            <h1><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Admin Panel</h1>
-        </div>
-        <button id="logoutButton" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Keluar
-        </button>
+        <div class="header-left"><h1><i class="fas fa-shield-alt" style="color:var(--primary);"></i> Admin Panel</h1></div>
+        <button id="logoutButton" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
       </div>
 
       <div class="stats-grid">
@@ -266,21 +223,17 @@
         let currentPage = 1, itemsPerPage = 10;
         let currentDetail = null, deleteMode = 'single', targetDeleteId = null;
 
-        // Redirect if not logged in
         if (!API_KEY) window.location.href = 'index.html';
 
-        // --- GLOBAL FUNCTIONS (HOISTED) ---
+        // --- GLOBAL FUNCTIONS ---
         
-        // 1. Data Loading
         async function loadData() {
             try {
                 const res = await fetch(`${API_URL}${API_KEY}`);
                 if (res.status === 401) throw new Error('Akses Ditolak');
                 const json = await res.json();
-                
                 rawData = json.results || [];
                 filteredData = [...rawData];
-                
                 calculateStats();
                 renderTable();
                 document.getElementById('loadingStatus').style.display = 'none';
@@ -297,7 +250,6 @@
             document.getElementById('statHijau').innerText = rawData.filter(i => i.pitaLila === 'Hijau').length;
         }
 
-        // 2. Table Render & Logic
         function renderTable() {
             const tbody = document.getElementById('dataTableBody');
             tbody.innerHTML = '';
@@ -333,7 +285,7 @@
                     <td style="text-align:center;"><span class="badge ${badgeClass}">${item.pitaLila}</span></td>
                     <td>${item.totalScore}</td>
                     <td style="text-align:center;">
-                        <div class="action-group" style="justify-content:center;">
+                        <div class="action-group">
                             <button onclick='openDetail("${item._id}")' class="action-btn btn-detail" title="Lihat"><i class="fas fa-eye"></i></button>
                             <button onclick='askDelete("${item._id}")' class="action-btn btn-delete" title="Hapus"><i class="fas fa-trash-alt"></i></button>
                         </div>
@@ -357,7 +309,6 @@
 
         function changePage(dir) { currentPage += dir; renderTable(); }
 
-        // 3. Selection
         window.toggleSelect = function(cb) {
             cb.checked ? selectedIds.add(cb.value) : selectedIds.delete(cb.value);
             updateActionBar();
@@ -369,35 +320,157 @@
             bar.style.display = selectedIds.size > 0 ? 'flex' : 'none';
         }
 
-        // 4. Modals
+        // --- EXPORT FUNCTIONS (Fixed & Global) ---
+        function getExportData() {
+            return filteredData.map(i => ({
+                'Tanggal': new Date(i.tanggalSkrining).toLocaleDateString('id-ID'),
+                'Nama': i.nama, 'Usia': i.usia, 'Status': i.pitaLila, 'Skor': i.totalScore, 'Rekomendasi': i.rekomendasi
+            }));
+        }
+
+        function exportExcel() {
+            if(!filteredData.length) return showAlert('Data kosong');
+            const ws = XLSX.utils.json_to_sheet(getExportData());
+            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data");
+            XLSX.writeFile(wb, "Rekap_TB.xlsx");
+        }
+
+        function exportPdf() {
+            if(!filteredData.length) return showAlert('Data kosong');
+            const { jsPDF } = window.jspdf; const doc = new jsPDF('l');
+            doc.text("Rekap Data Skrining TB", 14, 15);
+            const data = getExportData().map(Object.values);
+            doc.autoTable({ head: [Object.keys(getExportData()[0])], body: data, startY: 25 });
+            doc.save("Rekap_TB.pdf");
+        }
+
+        function exportDetailPdf() {
+            if (!currentDetail) return;
+            const { jsPDF } = window.jspdf; const doc = new jsPDF();
+            
+            // Header Color
+            doc.setFillColor(37, 99, 235); doc.rect(0, 0, 210, 30, 'F');
+            doc.setTextColor(255); doc.setFontSize(18); doc.text("Laporan Detail Pasien", 105, 20, null, null, "center");
+            
+            // Identity
+            doc.setTextColor(0); doc.setFontSize(11);
+            doc.text(`Nama: ${currentDetail.nama}`, 14, 45);
+            doc.text(`Tanggal: ${new Date(currentDetail.tanggalSkrining).toLocaleDateString()}`, 140, 45);
+            doc.text(`Status: ${currentDetail.pitaLila} (Skor: ${currentDetail.totalScore})`, 14, 52);
+            
+            // AI Info
+            if(currentDetail.aiAnalysis) {
+                doc.text(`Analisis AI: ${currentDetail.aiAnalysis} (${(parseFloat(currentDetail.aiProbability)*100).toFixed(0)}%)`, 14, 62);
+            }
+
+            // Table Data
+            const rows = [];
+            if(currentDetail.dataSkrining) {
+                Object.entries(currentDetail.dataSkrining).forEach(([k,v]) => {
+                    if(v==='Ya'||v==='Tidak') rows.push([k.replace(/([A-Z])/g, ' $1'), v]);
+                });
+            }
+            doc.autoTable({ startY: 75, head: [["Indikator", "Hasil"]], body: rows, theme:'grid' });
+            
+            doc.save(`Detail_${currentDetail.nama}.pdf`);
+        }
+
+        // --- HELPER FUNCTIONS ---
         function showAlert(msg, title='Info', icon='ℹ️') {
             document.getElementById('alertTitle').innerText = title;
             document.getElementById('alertMessage').innerText = msg;
             document.getElementById('alertModal').classList.add('active');
         }
         
-        window.closeModal = function(id) {
-            document.getElementById(id).classList.remove('active');
-        };
+        window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); };
 
         function showConfirm(icon, title, msg, action) {
             document.getElementById('confirmIcon').innerText = icon;
             document.getElementById('confirmTitle').innerText = title;
             document.getElementById('confirmMessage').innerText = msg;
             
-            const btnYes = document.getElementById('btnConfirmYes');
-            // Remove old listeners by cloning
-            const newBtn = btnYes.cloneNode(true);
-            btnYes.parentNode.replaceChild(newBtn, btnYes);
+            const yesBtn = document.getElementById('btnConfirmYes');
+            const newBtn = yesBtn.cloneNode(true); // Remove old listeners
+            yesBtn.parentNode.replaceChild(newBtn, yesBtn);
             
             newBtn.onclick = action;
             document.getElementById('confirmModal').classList.add('active');
         }
 
-        // 5. Delete Logic
+        // --- AUDIO PATH FIX ---
+        function cleanAudioPath(path) {
+            if (!path) return null;
+            // Ambil nama file saja, abaikan path folder sebelumnya
+            const filename = path.split(/[/\\]/).pop();
+            return `/uploads/${filename}`;
+        }
+
+        // --- DETAIL LOGIC ---
+        window.openDetail = function(id) {
+            const item = rawData.find(i => i._id === id);
+            if (!item) return;
+            currentDetail = item;
+            
+            let borderColor = item.pitaLila === 'Kuning' ? '#f59e0b' : item.pitaLila === 'Merah' ? '#ef4444' : '#10b981';
+            
+            let answersHtml = '';
+            if(item.dataSkrining) {
+                Object.entries(item.dataSkrining).forEach(([k,v]) => {
+                    if(v==='Ya'||v==='Tidak') {
+                        const label = k.replace(/([A-Z])/g, ' $1').trim();
+                        const valColor = v === 'Ya' ? 'color:var(--danger); font-weight:700;' : 'color:var(--success); font-weight:700;';
+                        answersHtml += `<div class="ans-item"><span>${label}</span><span style="${valColor}">${v}</span></div>`;
+                    }
+                });
+            }
+
+            let aiDisplay = '';
+            if (item.aiProbability && item.aiAnalysis && item.aiAnalysis !== '-') {
+                let prob = (parseFloat(item.aiProbability)*100).toFixed(0) + '%';
+                let aiClass = item.aiAnalysis.includes('Positif') ? 'color:var(--danger)' : 'color:var(--success)';
+                aiDisplay = `
+                    <div class="ai-box">
+                        <div class="ai-title"><i class="fas fa-robot"></i> Analisis AI</div>
+                        <div class="ai-grid">
+                            <div><span class="ai-label">Prediksi</span><div class="ai-val" style="${aiClass}">${item.aiAnalysis}</div></div>
+                            <div><span class="ai-label">Keyakinan</span><div class="ai-val">${prob}</div></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // AUDIO FIX
+            let audioLink = '-';
+            if (item.audioFilePath) {
+                const safeUrl = cleanAudioPath(item.audioFilePath);
+                audioLink = `<a href="${safeUrl}" target="_blank" style="color:var(--primary); font-weight:600;"><i class="fas fa-play-circle"></i> Putar</a>`;
+            }
+
+            document.getElementById('detailContent').innerHTML = `
+                <div class="info-grid">
+                    <div class="info-box"><label>Nama Lengkap</label><span>${item.nama}</span></div>
+                    <div class="info-box"><label>Tanggal</label><span>${new Date(item.tanggalSkrining).toLocaleString('id-ID')}</span></div>
+                    <div class="info-box"><label>Usia</label><span>${item.usia || '-'} Thn</span></div>
+                    <div class="info-box"><label>Telepon</label><span>${item.no_telp || '-'}</span></div>
+                    <div class="info-box"><label>Audio</label><span>${audioLink}</span></div>
+                </div>
+                <div class="result-panel" style="border-left-color:${borderColor}; background:${borderColor}10;">
+                    <h3 style="margin:0; color:${borderColor}">Status: ${item.pitaLila} (Skor: ${item.totalScore})</h3>
+                    <p style="margin:5px 0 0;">${item.rekomendasi}</p>
+                </div>
+                ${aiDisplay}
+                <h4 style="margin-bottom:10px; color:var(--secondary);">Rincian Jawaban</h4>
+                <div class="answers-list">${answersHtml}</div>
+            `;
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        // --- DELETE LOGIC ---
         window.askDelete = function(id, isBulk = false) {
             deleteMode = isBulk ? 'batch' : 'single'; 
             targetDeleteId = id;
+            if (isBulk && selectedIds.size === 0) return showAlert("Pilih data dulu!");
+            
             showConfirm(isBulk ? '🗑️' : '⚠️', isBulk ? 'Hapus Massal?' : 'Hapus Data?', isBulk ? `Hapus ${selectedIds.size} data terpilih?` : 'Data akan dihapus permanen.', executeDelete);
         }
 
@@ -415,7 +488,6 @@
 
             try {
                 const res = await fetch(url, opts);
-                // Check content type to avoid HTML error pages parsing as JSON
                 const contentType = res.headers.get("content-type");
                 if (!contentType || !contentType.includes("application/json")) {
                     throw new Error("Server Error (500)");
@@ -429,90 +501,6 @@
             } catch (e) { showAlert(e.message, 'Gagal', '❌'); }
         }
 
-        // 6. Detail Logic
-        window.openDetail = function(id) {
-            const item = rawData.find(i => i._id === id);
-            if (!item) return;
-            currentDetail = item;
-            
-            let borderColor = item.pitaLila === 'Kuning' ? '#f59e0b' : item.pitaLila === 'Merah' ? '#ef4444' : '#10b981';
-            
-            let answersHtml = '';
-            if(item.dataSkrining) {
-                Object.entries(item.dataSkrining).forEach(([k,v]) => {
-                    if(v==='Ya'||v==='Tidak') {
-                         const label = k.replace(/([A-Z])/g, ' $1').trim();
-                         const valColor = v === 'Ya' ? 'color:var(--danger); font-weight:700;' : 'color:var(--success); font-weight:700;';
-                         answersHtml += `<div class="ans-item"><span>${label}</span><span style="${valColor}">${v}</span></div>`;
-                    }
-                });
-            }
-
-            let aiDisplay = '';
-            if (item.aiProbability && item.aiAnalysis) {
-                let prob = (parseFloat(item.aiProbability)*100).toFixed(0) + '%';
-                let aiClass = item.aiAnalysis.includes('Positif') ? 'color:var(--danger)' : 'color:var(--success)';
-                aiDisplay = `
-                    <div class="ai-box">
-                        <div class="ai-title"><i class="fas fa-robot"></i> Analisis AI</div>
-                        <div class="ai-grid">
-                            <div><span class="ai-label">Prediksi</span><div class="ai-val" style="${aiClass}">${item.aiAnalysis}</div></div>
-                            <div><span class="ai-label">Keyakinan</span><div class="ai-val">${prob}</div></div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            document.getElementById('detailContent').innerHTML = `
-                <div class="info-grid">
-                    <div class="info-box"><label>Nama Lengkap</label><span>${item.nama}</span></div>
-                    <div class="info-box"><label>Tanggal</label><span>${new Date(item.tanggalSkrining).toLocaleString('id-ID')}</span></div>
-                    <div class="info-box"><label>Usia</label><span>${item.usia || '-'} Thn</span></div>
-                    <div class="info-box"><label>Telepon</label><span>${item.no_telp || '-'}</span></div>
-                    <div class="info-box"><label>Akun</label><span>${item.userId ? item.userId.username : 'Guest'}</span></div>
-                    <div class="info-box"><label>Audio</label><span>${item.audioFilePath ? `<a href="/${item.audioFilePath}" target="_blank" style="color:var(--primary)">Putar</a>` : '-'}</span></div>
-                </div>
-                <div class="result-panel" style="border-left-color:${borderColor}; background:${borderColor}10;">
-                    <h3 style="margin:0; color:${borderColor}">Status: ${item.pitaLila} (Skor: ${item.totalScore})</h3>
-                    <p style="margin:5px 0 0;">${item.rekomendasi}</p>
-                </div>
-                ${aiDisplay}
-                <h4 style="margin-bottom:10px; color:var(--secondary);">Rincian Jawaban</h4>
-                <div class="answers-list">${answersHtml}</div>
-            `;
-            document.getElementById('detailModal').classList.add('active');
-        }
-
-        // 7. Exports
-        function getExportData() {
-            return filteredData.map(i => ({
-                'Tanggal': new Date(i.tanggalSkrining).toLocaleDateString('id-ID'),
-                'Nama': i.nama, 'Usia': i.usia, 'Status': i.pitaLila, 'Skor': i.totalScore, 'Rekomendasi': i.rekomendasi
-            }));
-        }
-        function exportExcel() {
-            if(!filteredData.length) return showAlert('Data kosong');
-            const ws = XLSX.utils.json_to_sheet(getExportData());
-            const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Data");
-            XLSX.writeFile(wb, "Rekap_TB.xlsx");
-        }
-        function exportPdf() {
-            if(!filteredData.length) return showAlert('Data kosong');
-            const { jsPDF } = window.jspdf; const doc = new jsPDF('l');
-            doc.text("Rekap Data Skrining TB", 14, 15);
-            const data = getExportData().map(Object.values);
-            doc.autoTable({ head: [Object.keys(getExportData()[0])], body: data, startY: 25 });
-            doc.save("Rekap_TB.pdf");
-        }
-        function exportDetailPdf() {
-            if (!currentDetail) return;
-            const { jsPDF } = window.jspdf; const doc = new jsPDF();
-            doc.setFontSize(18); doc.text("Laporan Detail", 14, 20);
-            doc.setFontSize(10); doc.text(`Nama: ${currentDetail.nama}`, 14, 30);
-            doc.autoTable({ startY: 40, html: '.answers-list' });
-            doc.save(`Detail_${currentDetail.nama}.pdf`);
-        }
-
         // --- INIT LISTENER ---
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
@@ -522,13 +510,13 @@
             document.getElementById('prevBtn').onclick = () => changePage(-1);
             document.getElementById('nextBtn').onclick = () => changePage(1);
             
+            // FIX: Panggil fungsi global
             document.getElementById('btnBulkDelete').onclick = () => askDelete(null, true);
-            
             document.getElementById('exportExcelButton').onclick = exportExcel;
             document.getElementById('exportPdfButton').onclick = exportPdf;
             document.getElementById('exportDetailPdfButton').onclick = exportDetailPdf;
             
-            // LOGOUT BUTTON
+            // LOGOUT
             document.getElementById('logoutButton').addEventListener('click', () => {
                 showConfirm('🚪', 'Keluar?', 'Akhiri sesi admin ini?', () => {
                     localStorage.removeItem('adminAccessKey');
